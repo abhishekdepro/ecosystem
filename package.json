@@ -1,0 +1,30 @@
+{
+  "name": "ecosystem",
+  "version": "1.0.0",
+  "description": "waste management API",
+  "main": "app.js",
+  "dependencies": {
+    "mongojs": "^1.2.1",
+    "mongoose": "^4.1.1",
+    "restify": "^3.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhishekdepro/ecosystem.git"
+  },
+  "keywords": [
+    "waste",
+    "recycle",
+    "ecosquare"
+  ],
+  "author": "Abhishek Dey",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/abhishekdepro/ecosystem/issues"
+  },
+  "homepage": "https://github.com/abhishekdepro/ecosystem"
+}
