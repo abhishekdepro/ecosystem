@@ -10,12 +10,12 @@
 var mongojs = require('mongojs');
 var restify = require('restify');
 var ip_addr = '127.0.0.1';
-var port    =  process.env.PORT || 1337;
- 
+var port    =  process.env.PORT || 80;
+
 var server = restify.createServer({
     name : "Ecosquare API"
 });
- 
+
 server.listen(port ,ip_addr, function(){
     console.log('%s listening at %s ', server.name , server.url);
 });
@@ -44,15 +44,15 @@ function findAllJobs(req, res , next){ //finds all users listed
         console.log('Response error '+err);
         if(success){
             res.end(JSON.stringify(success,null,3)); //JSON response
-            
+
         }else{
             return next(err);
         }
- 
+
     });
- 
+
 }
- 
+
 function findJob(req, res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
     user.findOne({_id:mongojs.ObjectId(req.params.jobId)} , function(err , success){
@@ -65,7 +65,7 @@ function findJob(req, res , next){
         return next(err);
     })
 }
- 
+
 function postNewJob(req , res , next){
     var _user = {};
     _user._id = req.params.id;
@@ -73,9 +73,9 @@ function postNewJob(req , res , next){
     _user.email = req.params.email;
     _user.address = req.params.address;
     _user.joinDate = new Date();
- 
+
     res.setHeader('Access-Control-Allow-Origin','*');
- 
+
     user.save(_user , function(err , success){
         console.log('Response success '+success);
         console.log('Response error '+err);
@@ -87,7 +87,7 @@ function postNewJob(req , res , next){
         }
     });
 }
- 
+
 function deleteJob(req , res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
     user.remove({_id:mongojs.ObjectId(req.params.id)} , function(err , success){
@@ -95,10 +95,10 @@ function deleteJob(req , res , next){
         console.log('Response error '+err);
         if(success){
             res.send(204);
-            return next();      
+            return next();
         } else{
             return next(err);
         }
     })
- 
+
 }
