@@ -33,8 +33,8 @@ var user = db.collection("user");
 /******************************Routes******************************/
 var PATH = '/user'
 server.get({path : PATH , version : '0.0.1'} , findAllJobs);
-//server.get({path : PATH +'/:userId' , version : '0.0.1'} , findJob);
 server.get({path : PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
+server.get({path : PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
 server.post({path : PATH , version: '0.0.1'} ,postNewJob);
 server.del({path : PATH +'/delete/:userId' , version: '0.0.1'} ,deleteJob);
 
@@ -77,6 +77,16 @@ function findJob(req, res , next){
 
 function findUserbyID(req,res){
     user.findOne({_id:req.params.userId}, function(err, success){
+        if(success){
+            res.end(JSON.stringify(success,null,3));
+        }else{
+            res.end(err);
+        }
+    });
+}
+
+function findUserbyAddress(req,res){
+    user.findOne({address:req.params.UserAddress}, function(err, success){
         if(success){
             res.end(JSON.stringify(success,null,3));
         }else{
