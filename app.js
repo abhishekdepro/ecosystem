@@ -4,6 +4,10 @@
 * @author  : Abhishek Dey
 * @version : 1.0.0.0
 * @date    : 8 Aug 2015
+* @legend  : {
+* //=====//: denotes start & end of functions/modules
+* /*****'/': denotes difference in sub-modules or functional requirements
+* }
 */
 
 /********************Libraries and Requirements*********************/
@@ -17,8 +21,7 @@ var server = restify.createServer({
 });
 
 server.listen(port , function(){
-    //console.log('%s listening at %s ', server.name , server.url);
-    console.log('started');
+    console.log('started %s', server.name);
 });
 
 server.use(restify.queryParser());
@@ -29,25 +32,29 @@ server.use(restify.CORS());
 var connection_string = 'mongodb://207.46.227.159:27017/ecosquaredb';
 var db = mongojs(connection_string, ['ecosquaredb']);
 var user = db.collection("user");
+var transactions = db.collection("transaction");
 
 /******************************Routes******************************/
 var PATH = '/user'
-server.get({path : PATH , version : '0.0.1'} , findAllJobs);
+server.get({path : PATH , version : '0.0.1'} , findAllUsers);
 server.get({path : PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
 server.get({path : PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
-server.post({path : PATH , version: '0.0.1'} ,postNewJob);
-server.del({path : PATH +'/delete/:userId' , version: '0.0.1'} ,deleteJob);
+server.post({path : PATH , version: '0.0.1'} ,createUser);
+server.del({path : PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
 
-/******************************Functions******************************/
+/*****************************Functions****************************/
+
+//==================================================================//
+//generate token for auth and secure hashing
 function generateToken(){
   require('crypto').randomBytes(16, function(ex, buf) {
     token = buf.toString('hex');
     console.log(token);
   });
 }
-
-
-function findAllJobs(req, res , next){ //finds all users listed
+//==================================================================//
+//Start User CRUD operations
+function findAllUsers(req, res , next){ //finds all users listed
     res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
     user.find().limit(20).sort({postedOn : -1} , function(err , success){ //limit of 20 users
         //console.log(_token);
@@ -60,19 +67,6 @@ function findAllJobs(req, res , next){ //finds all users listed
 
     });
 
-}
-
-function findJob(req, res , next){
-    res.setHeader('Access-Control-Allow-Origin','*');
-    user.findOne({_id:mongojs.ObjectId(req.params.jobId)} , function(err , success){
-        console.log('Response success '+success);
-        console.log('Response error '+err);
-        if(success){
-            res.send(200 , success);
-            return next();
-        }
-        return next(err);
-    })
 }
 
 function findUserbyID(req,res){
@@ -95,7 +89,7 @@ function findUserbyAddress(req,res){
     });
 }
 
-function postNewJob(req , res , next){
+function createUser(req , res , next){
     var _user = {};
     generateToken();
     console.log(token);
@@ -122,7 +116,7 @@ function postNewJob(req , res , next){
     });
 }
 
-function deleteJob(req , res , next){
+function deleteUser(req , res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
     user.remove({_id:req.params.userId} , function(err , success){
         console.log('Response success '+success);
@@ -136,3 +130,6 @@ function deleteJob(req , res , next){
     })
 
 }
+//end User CRUD operations
+//==================================================================//
+//Transaction CRUD operations
