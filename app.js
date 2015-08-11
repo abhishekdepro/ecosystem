@@ -35,19 +35,31 @@ var user = db.collection("user");
 var transactions = db.collection("transaction");
 
 /******************************Routes******************************/
-var PATH = '/user'
-server.get({path : PATH , version : '0.0.1'} , findAllUsers);
-server.get({path : PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
-server.get({path : PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
-server.post({path : PATH , version: '0.0.1'} ,createUser);
-server.del({path : PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
+
+//==================================================================//
+//USER Routes
+var USER_PATH = '/user'
+server.get({path  : USER_PATH , version : '0.0.1'} , findAllUsers);
+server.get({path  : USER_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
+server.get({path  : USER_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
+server.post({path : USER_PATH , version: '0.0.1'} ,createUser);
+server.del({path  : USER_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
+//==================================================================//
+//TRANSACTION Routes
+var TRANSACTION_PATH = '/transaction'
+server.get({path  : TRANSACTION_PATH , version : '0.0.1'} , findAllTransactions);
+server.get({path  : TRANSACTION_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
+server.get({path  : TRANSACTION_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
+server.post({path : TRANSACTION_PATH , version: '0.0.1'} , onTransactionStart);
+server.del({path  : TRANSACTION_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
+//==================================================================//
 
 /*****************************Functions****************************/
 
 //==================================================================//
 //generate token for auth and secure hashing
-function generateToken(){
-  require('crypto').randomBytes(16, function(ex, buf) {
+function generateToken(strength){
+  require('crypto').randomBytes(strength, function(ex, buf) {
     token = buf.toString('hex');
     console.log(token);
   });
@@ -91,7 +103,7 @@ function findUserbyAddress(req,res){
 
 function createUser(req , res , next){
     var _user = {};
-    generateToken();
+    generateToken(16);
     console.log(token);
     _user._id = req.params.id;
     _user.name = req.params.name;
@@ -133,3 +145,48 @@ function deleteUser(req , res , next){
 //end User CRUD operations
 //==================================================================//
 //Transaction CRUD operations
+
+function onTransactionStart(req, res, next){
+  var transaction = {};
+  var quantity = {};
+  generateToken(8);
+  console.log(token);
+  transaction._id = token;
+  transaction.u_id = req.params.u_id;
+  transaction.emp_id = req.params.emp_id;
+  transaction.lat = req.params.lat;
+  transaction.lon = req.params.lon;
+  transaction.quantity = quantity;
+  transaction.quantity.paper = req.params.paper;
+  transaction.quantity.plastic = req.params.plastic;
+  transaction.mode = req.params.mode;
+  transaction.date = new Date();
+
+  res.setHeader('Access-Control-Allow-Origin','*');
+
+  transactions.save(transaction , function(err , success){
+      console.log('Response success '+success);
+      console.log('Response error '+err);
+      if(success){
+          res.send(201 , transaction);
+          return next();
+      }else{
+          return next(err);
+      }
+  });
+}
+
+function findAllTransactions(req, res , next){ //finds all users listed
+    res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
+    transactions.find().limit(20).sort({postedOn : -1} , function(err , success){
+        //console.log(_token);
+        console.log('Response error '+err);
+        if(success){
+            res.end(JSON.stringify(success,null,3)); //JSON response
+        }else{
+            return next(err);
+        }
+
+    });
+
+}
