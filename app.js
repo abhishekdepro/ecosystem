@@ -190,18 +190,3 @@ function findAllTransactions(req, res , next){ //finds all users listed
     });
 
 }
-
-function deleteTransaction(req, res , next){ //finds all users listed
-    res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
-    transactions.find().limit(20).sort({postedOn : -1} , function(err , success){
-        //console.log(_token);
-        console.log('Response error '+err);
-        if(success){
-            res.end(JSON.stringify(success,null,3)); //JSON response
-        }else{
-            return next(err);
-        }
-
-    });
-
-}
