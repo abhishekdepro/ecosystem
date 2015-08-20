@@ -1,9 +1,13 @@
 package abhishekdey.ecosquare;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Criteria;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -13,24 +17,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.widget.Toast;
 
 
-public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
+public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Marker myMarker;
+    private Marker myMarker,x,y;
     private double lat,lon;
     LocationManager locationManager ;
     String provider;
+    GoogleMap.InfoWindowAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         setUpMapIfNeeded();
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
@@ -74,6 +82,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarker
 
         // Setting Current Latitude
         lat = location.getLatitude();
+
+
+        myMarker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lat, lon))
+                .title("My Spot").icon(BitmapDescriptorFactory.fromResource(R.drawable.start))
+                .snippet("This is my spot!"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 10.0f));
+        myMarker.setDraggable(true);
+        mMap.setOnMarkerClickListener(this);
+        //myMarker.showInfoWindow();
+        //mMap.setInfoWindowAdapter(adapter);
+        //adapter.getInfoWindow(myMarker);
     }
 
     @Override
@@ -143,22 +163,30 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarker
      */
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(22.56,88.36) , 8.0f) );
-        mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon))).setDraggable(true);
-        mMap.setOnMarkerClickListener(this);
 
-        myMarker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lat, lon))
-                .title("My Spot")
-                .snippet("This is my spot!"));
+         x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("50% full"));
+
+         y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
+
+        x.showInfoWindow();
+        y.showInfoWindow();
+        x.setDraggable(true);
+        y.setDraggable(true);
 
     }
+
+
+
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        if (marker.equals(myMarker))
+        if (marker.equals(x))
         {
-
+            x.showInfoWindow();
+        }
+        else if (marker.equals(y))
+        {
+            y.showInfoWindow();
         }
         return true;
     }
