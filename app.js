@@ -161,6 +161,7 @@ function onTransactionStart(req, res, next){
   transaction.quantity.plastic = req.params.plastic;
   transaction.mode = req.params.mode;
   transaction.date = new Date();
+  transaction.status = req.params.status;
 
   res.setHeader('Access-Control-Allow-Origin','*');
 
