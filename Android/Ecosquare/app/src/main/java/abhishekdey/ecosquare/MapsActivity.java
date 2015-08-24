@@ -44,6 +44,7 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarke
     LocationManager locationManager ;
     String provider;
     GoogleMap.InfoWindowAdapter adapter;
+    private String activeMarker = "myMarker";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,7 +230,9 @@ try {
 
 }catch (IOException ex){
     Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
-}
+}       if(activeMarker=="myMarker"){
+        if(myMarker!=null)
+            myMarker.remove();
         myMarker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(lat, lon))
                 .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start))
@@ -240,6 +243,7 @@ try {
         myMarker.showInfoWindow();
         //mMap.setInfoWindowAdapter(adapter);
         //adapter.getInfoWindow(myMarker);
+    }
     }
 
     @Override
@@ -309,15 +313,48 @@ try {
      */
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+        mMap.setMyLocationEnabled(true);
          x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("50% full"));
 
          y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
 
         x.showInfoWindow();
         y.showInfoWindow();
-        x.setDraggable(true);
-        y.setDraggable(true);
+        //x.setDraggable(true);
+        //y.setDraggable(true);
+
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                if (mMap.getMyLocation() != null) {
+                    double lat = marker.getPosition().latitude;
+                    double lon = marker.getPosition().longitude;
+                    Location location = new Location("Test");
+                    location.setLatitude(lat);
+                    location.setLongitude(lon);
+                   onLocationChanged(location);
+                }
+                if(marker.equals(x)){
+                    activeMarker = "x";
+                }else if(marker.equals(y)){
+                    activeMarker = "y";
+                }
+                else{
+                    activeMarker = "myMarker";
+                }
+
+            }
+        });
 
     }
 
