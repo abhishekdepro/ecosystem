@@ -6,11 +6,15 @@ import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +25,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import android.location.Location;
@@ -28,12 +35,37 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
@@ -43,15 +75,83 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private double lat,lon;
     LocationManager locationManager ;
     String provider;
+    Map m;
+
+
     GoogleMap.InfoWindowAdapter adapter;
     private String activeMarker = "myMarker";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
+        Button button= (Button) findViewById(R.id.button_request);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Trying Ion
+                JsonObject json = new JsonObject();
+                json.addProperty("u_id", "8981169454");
+                json.addProperty("emp_id", "876567890");
+                json.addProperty("lat", Double.toString(lat));
+                json.addProperty("lon", Double.toString(lon));
+                json.addProperty("paper", "5");
+                json.addProperty("plastic", "10");
+                json.addProperty("mode", "cash");
+                json.addProperty("status", "init");
+
+                Ion.with(getApplicationContext())
+                        .load("http://ecosquare.herokuapp.com/transaction")
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if(e!=null){
+                                    Toast.makeText(getBaseContext(), "Data : "+e.getStackTrace(), Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+
+                /*try {
+                    HttpURLConnection httpcon = (HttpURLConnection) ((new URL("http://ecosquare.herokuapp.com/transaction?" +
+                            "u_id=8767856743&emp_id=9804770561&lat=22.56&lon=88.34&paper=20&plastic=10&mode=cash&status=init").openConnection()));
+                    httpcon.setDoOutput(true);
+                    httpcon.setRequestProperty("Content-Type", "application/json");
+                    httpcon.setRequestProperty("Accept", "application/json");
+                    httpcon.setRequestMethod("POST");
+                    httpcon.connect();
+
+                    byte[] outputBytes = "{'value': 7.5}".getBytes("UTF-8");
+                    OutputStream os = httpcon.getOutputStream();
+                    os.write(outputBytes);
+
+                    os.close();
+                }catch (Exception e){
+                    Toast.makeText(getBaseContext(), "Error "+e.toString(), Toast.LENGTH_LONG).show();
+                }
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("u_id", "8981169454");
+                data.put("emp_id", "9804770561");
+                data.put("lat",Double.toString(lat));
+                data.put("lon",Double.toString(lon));
+                data.put("paper","10");
+                data.put("plastic","10");
+                data.put("mode","cash");
+                data.put("status", "init");
+                HttpLibrary post = new HttpLibrary(data);
+                post.execute("http://ecosquare.herokuapp.com/transaction?u_id=8981169454&emp_id=9804770561" +
+                        "&lat="+data.get("lat")+"&lon="+data.get("lon")+"&paper=20&plastic=10&mode=cash&status=init");
+                Toast.makeText(getBaseContext(), "Data : "+data, Toast.LENGTH_LONG).show();*/
+            }
+        });
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         // Creating an empty criteria object
@@ -305,6 +405,7 @@ try {
         }
     }
 
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
@@ -337,8 +438,8 @@ try {
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 if (mMap.getMyLocation() != null) {
-                    double lat = marker.getPosition().latitude;
-                    double lon = marker.getPosition().longitude;
+                     lat = marker.getPosition().latitude;
+                     lon = marker.getPosition().longitude;
                     Location location = new Location("Test");
                     location.setLatitude(lat);
                     location.setLongitude(lon);
@@ -357,6 +458,7 @@ try {
         });
 
     }
+    //POST HTTP
 
 
 

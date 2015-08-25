@@ -29,8 +29,8 @@ server.use(restify.bodyParser());
 server.use(restify.CORS());
 
 /*************************MongoDB Server****************************/
-var connection_string = 'mongodb://example.com/21707';
-var db = mongojs(connection_string, ['db_name']);
+var connection_string = 'mongodb://AbhishekDey:ecosquare@207.46.227.159:27017/ecosquaredb';
+var db = mongojs(connection_string, ['ecosquaredb']);
 var user = db.collection("user");
 var transactions = db.collection("transaction");
 

@@ -30,4 +30,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:3.1.2@aar') {
         transitive = true
     }
+    dependencies {
+        compile 'com.koushikdutta.ion:ion:2.+'
+    }
 }
