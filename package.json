@@ -6,7 +6,8 @@
   "dependencies": {
     "mongojs": "^1.2.1",
     "mongoose": "^4.1.1",
-    "restify": "^3.0.3"
+    "restify": "^3.0.3",
+    "crypto": "*"
   },
   "devDependencies": {},
   "scripts": {
