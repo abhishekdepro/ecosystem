@@ -29,8 +29,8 @@ server.use(restify.bodyParser());
 server.use(restify.CORS());
 
 /*************************MongoDB Server****************************/
-var connection_string = 'mongodb://AbhishekDey:ecosquare@207.46.227.159:27017/ecosquaredb';
-var db = mongojs(connection_string, ['ecosquaredb']);
+var connection_string = 'mongodb://example.com';
+var db = mongojs(connection_string, ['db_name']);
 var user = db.collection("user");
 var transactions = db.collection("transaction");
 
@@ -149,22 +149,19 @@ function deleteUser(req , res , next){
 function onTransactionStart(req, res, next){
   var transaction = {};
   var quantity = {};
+  var obj=req.body;       //for bodyParser and JSON incoming
   generateToken(8);
-  console.log(token);
   transaction._id = token;
-  transaction.u_id = req.params.u_id;
-  transaction.emp_id = req.params.emp_id;
-  transaction.lat = req.params.lat;
-  transaction.lon = req.params.lon;
+  transaction.u_id = obj.u_id;
+  transaction.emp_id = obj.emp_id;
+  transaction.lat = obj.lat;
+  transaction.lon = obj.lon;
   transaction.quantity = quantity;
-  transaction.quantity.paper = req.params.paper;
-  transaction.quantity.plastic = req.params.plastic;
-  transaction.mode = req.params.mode;
+  transaction.quantity.paper = obj.paper;
+  transaction.quantity.plastic = obj.plastic;
+  transaction.mode = obj.mode;
   transaction.date = new Date();
-  transaction.status = req.params.status;
-
-  res.setHeader('Access-Control-Allow-Origin','*');
-
+  transaction.status = obj.status;
   transactions.save(transaction , function(err , success){
       console.log('Response success '+success);
       console.log('Response error '+err);
