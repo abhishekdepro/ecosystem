@@ -1,5 +1,6 @@
 package abhishekdey.ecosquare;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,9 +12,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,6 +33,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.parse.ParseObject;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -68,14 +73,13 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Marker myMarker,x,y;
     private double lat,lon;
     LocationManager locationManager ;
     String provider;
-    Map m;
 
 
     GoogleMap.InfoWindowAdapter adapter;
@@ -83,11 +87,16 @@ public class MapsActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_maps);
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
         Button button= (Button) findViewById(R.id.button_request);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

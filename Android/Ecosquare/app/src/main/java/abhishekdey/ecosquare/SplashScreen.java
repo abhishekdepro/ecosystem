@@ -7,14 +7,33 @@ import android.os.Handler;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.parse.Parse;
 
 
 public class SplashScreen extends Activity {
 
     private static int SPLASH_TIME_OUT = 3000;
 
+    public void buttonClickFunction(View v)
+    {
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "Lg41go4Abua0UIYThLXKHcsgWbWpuVbVehru45xP", "hUsTpwaIAyzYtroir8y4XR5SXPz3NpJmHi0FbwUs");
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
