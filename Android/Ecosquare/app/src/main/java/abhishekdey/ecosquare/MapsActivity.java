@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -344,7 +345,7 @@ try {
             myMarker.remove();
         myMarker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(lat, lon))
-                .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.start))
+                .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                 .snippet(addresses.get(0).getLocality()));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 10.0f));
         myMarker.setDraggable(true);
@@ -469,7 +470,10 @@ try {
     }
     //POST HTTP
 
-
+    public void locate_me(View v)
+    {
+        onLocationChanged(mMap.getMyLocation());
+    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
