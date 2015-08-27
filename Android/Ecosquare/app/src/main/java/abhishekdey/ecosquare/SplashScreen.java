@@ -25,8 +25,7 @@ public class SplashScreen extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "Lg41go4Abua0UIYThLXKHcsgWbWpuVbVehru45xP", "hUsTpwaIAyzYtroir8y4XR5SXPz3NpJmHi0FbwUs");
+
 
     }
 
