@@ -51,6 +51,7 @@ server.get({path  : TRANSACTION_PATH , version : '0.0.1'} , findAllTransactions)
 server.get({path  : TRANSACTION_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
 server.get({path  : TRANSACTION_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
 server.post({path : TRANSACTION_PATH , version: '0.0.1'} , onTransactionStart);
+server.put({path  : TRANSACTION_PATH +'/update/:id/:u_id' , version: '0.0.1'} , onTransactionEnd);
 server.del({path  : TRANSACTION_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
 //==================================================================//
 
@@ -149,7 +150,7 @@ function deleteUser(req , res , next){
 function onTransactionStart(req, res, next){
   var transaction = {};
   var quantity = {};
-  var obj=req.body;       //for bodyParser and JSON incoming
+  var obj=req.body;
   generateToken(8);
   transaction._id = token;
   transaction.u_id = obj.u_id;
@@ -170,6 +171,22 @@ function onTransactionStart(req, res, next){
           return next();
       }else{
           return next(err);
+      }
+  });
+}
+
+function onTransactionEnd(req,res,next){
+  var query = {
+    _id : req.params.id
+  }
+  var change = {
+    $set : {u_id : req.params.u_id, status : req.params.status}
+  }
+  transactions.update(query, change, function(err, success){
+      if(err){
+        return next(err);
+      }else{
+        res.end(JSON.stringify(success,null,3));
       }
   });
 }
