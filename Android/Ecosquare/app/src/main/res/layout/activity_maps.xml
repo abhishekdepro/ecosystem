@@ -14,20 +14,22 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
 
         android:layout_alignParentTop="true">
-        <Button
-            android:id="@+id/button_request"
-            android:text="Request Pickup"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:layout_gravity="center_horizontal"
 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="13dp"
-            android:background="@drawable/map_button">
 
-        </Button>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add"
+            android:onClick="locate_me"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="360dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:clickable="true"
+            android:src="@drawable/tick"
+            app:backgroundTint="#000"
+            android:layout_gravity="right|end"
+            app:layout_anchorGravity="right|end"/>
 
 
 

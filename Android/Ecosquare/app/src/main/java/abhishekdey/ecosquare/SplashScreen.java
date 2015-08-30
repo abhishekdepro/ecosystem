@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.parse.Parse;
 
@@ -34,8 +36,10 @@ public class SplashScreen extends Activity {
 
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
+        this.requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        setContentView(R.layout.activity_splash_screen);
         new Handler().postDelayed(new Runnable() {
 
             /*
