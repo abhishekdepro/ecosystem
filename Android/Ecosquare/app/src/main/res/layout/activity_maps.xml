@@ -26,7 +26,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
             android:clickable="true"
-            android:src="@drawable/tick"
+            android:src="@drawable/add"
             app:backgroundTint="#000"
             android:layout_gravity="right|end"
             app:layout_anchorGravity="right|end"/>

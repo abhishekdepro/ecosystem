@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -120,83 +122,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                progress = ProgressDialog.show(MapsActivity.this, "Working",
-                        "The minions are working..", true);
-
-                new Thread(new Runnable() {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
-                    public void run()
-                    {
-                        //Trying Ion
-                        JsonObject json = new JsonObject();
-                        json.addProperty("u_id", "8981169454");
-                        json.addProperty("emp_id", "876567890");
-                        json.addProperty("lat", Double.toString(lat));
-                        json.addProperty("lon", Double.toString(lon));
-                        json.addProperty("paper", "5");
-                        json.addProperty("plastic", "10");
-                        json.addProperty("mode", "cash");
-                        json.addProperty("status", "init");
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                book();
+                                break;
 
-                        Ion.with(getApplicationContext())
-                                .load("http://ecosquare.herokuapp.com/transaction")
-                                .setJsonObjectBody(json)
-                                .asJsonObject()
-                                .setCallback(new FutureCallback<JsonObject>() {
-                                    @Override
-                                    public void onCompleted(Exception e, JsonObject result) {
-                                        if(e!=null){
-                                            Toast.makeText(getBaseContext(), "Data : "+e.getStackTrace(), Toast.LENGTH_LONG).show();
-                                        }else{
-                                            Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run()
-                            {
-                                progress.dismiss();
-                            }
-                        });
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
                     }
-                }).start();
+                };
 
-
-
-
-                /*try {
-                    HttpURLConnection httpcon = (HttpURLConnection) ((new URL("http://ecosquare.herokuapp.com/transaction?" +
-                            "u_id=8767856743&emp_id=9804770561&lat=22.56&lon=88.34&paper=20&plastic=10&mode=cash&status=init").openConnection()));
-                    httpcon.setDoOutput(true);
-                    httpcon.setRequestProperty("Content-Type", "application/json");
-                    httpcon.setRequestProperty("Accept", "application/json");
-                    httpcon.setRequestMethod("POST");
-                    httpcon.connect();
-
-                    byte[] outputBytes = "{'value': 7.5}".getBytes("UTF-8");
-                    OutputStream os = httpcon.getOutputStream();
-                    os.write(outputBytes);
-
-                    os.close();
-                }catch (Exception e){
-                    Toast.makeText(getBaseContext(), "Error "+e.toString(), Toast.LENGTH_LONG).show();
-                }
-                HashMap<String, String> data = new HashMap<String, String>();
-                data.put("u_id", "8981169454");
-                data.put("emp_id", "9804770561");
-                data.put("lat",Double.toString(lat));
-                data.put("lon",Double.toString(lon));
-                data.put("paper","10");
-                data.put("plastic","10");
-                data.put("mode","cash");
-                data.put("status", "init");
-                HttpLibrary post = new HttpLibrary(data);
-                post.execute("http://ecosquare.herokuapp.com/transaction?u_id=8981169454&emp_id=9804770561" +
-                        "&lat="+data.get("lat")+"&lon="+data.get("lon")+"&paper=20&plastic=10&mode=cash&status=init");
-                Toast.makeText(getBaseContext(), "Data : "+data, Toast.LENGTH_LONG).show();*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setMessage("Book a Pickup?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
             }
         });
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -227,10 +170,66 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
+        Log.i("Tag", "onPause, done");
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);
+            setUpMapIfNeeded();
+        }
+    }
+
+    public void book(){
+        progress = ProgressDialog.show(MapsActivity.this, "Working",
+                "The minions are working..", true);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                //Trying Ion
+                JsonObject json = new JsonObject();
+                json.addProperty("u_id", "8981169454");
+                json.addProperty("emp_id", "876567890");
+                json.addProperty("lat", Double.toString(lat));
+                json.addProperty("lon", Double.toString(lon));
+                json.addProperty("paper", "5");
+                json.addProperty("plastic", "10");
+                json.addProperty("mode", "cash");
+                json.addProperty("status", "init");
+
+                Ion.with(getApplicationContext())
+                        .load("http://ecosquare.herokuapp.com/transaction")
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if(e!=null){
+                                    Toast.makeText(getBaseContext(), "Data : "+e.getStackTrace(), Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        progress.dismiss();
+                    }
+                });
+            }
+        }).start();
+    }
+
+
     @Override
     public void onLocationChanged(Location location) {
         // Getting reference to TextView tv_longitude
@@ -242,6 +241,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Setting Current Latitude
         lat = location.getLatitude();
 
+        findAddress();
+    }
+
+    public void findAddress(){
         Geocoder geocoder;
         List<Address> addresses=new List<Address>() {
             @Override
@@ -365,37 +368,55 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             }
         };
         geocoder = new Geocoder(this, Locale.getDefault());
-try {
-    addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        try {
+            addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-    String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-    String city = addresses.get(0).getLocality();
-    String state = addresses.get(0).getAdminArea();
-    String country = addresses.get(0).getCountryName();
-    String postalCode = addresses.get(0).getPostalCode();
-    String knownName = addresses.get(0).getFeatureName();
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
 
-}catch (IOException ex){
-    Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
-}       if(activeMarker=="myMarker"){
-        if(myMarker!=null)
-            myMarker.remove();
-        myMarker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lat, lon))
-                .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                .snippet(addresses.get(0).getLocality()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
-        myMarker.setDraggable(true);
-        mMap.setOnMarkerClickListener(this);
-        myMarker.showInfoWindow();
-        //mMap.setInfoWindowAdapter(adapter);
-        //adapter.getInfoWindow(myMarker);
-    }
+        }catch (IOException ex){
+            Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
+        }       if(activeMarker=="myMarker"){
+            if(myMarker!=null)
+                myMarker.remove();
+            myMarker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lon))
+                    .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                    .snippet(addresses.get(0).getLocality()));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
+            myMarker.setDraggable(true);
+            mMap.setOnMarkerClickListener(this);
+            myMarker.showInfoWindow();
+            //mMap.setInfoWindowAdapter(adapter);
+            //adapter.getInfoWindow(myMarker);
+        }
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setMessage("Turn Location On?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     @Override
@@ -463,6 +484,7 @@ try {
     private void setUpMap() {
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
          x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("50% full"));
 
          y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
@@ -488,10 +510,7 @@ try {
                 if (mMap.getMyLocation() != null) {
                     lat = marker.getPosition().latitude;
                     lon = marker.getPosition().longitude;
-                    Location location = new Location("Test");
-                    location.setLatitude(lat);
-                    location.setLongitude(lon);
-                    onLocationChanged(location);
+                    findAddress();
                 }
                 if (marker.equals(x)) {
                     activeMarker = "x";
@@ -505,6 +524,8 @@ try {
         });
 
     }
+
+
     //POST HTTP
 
     public void locate_me(View v)
