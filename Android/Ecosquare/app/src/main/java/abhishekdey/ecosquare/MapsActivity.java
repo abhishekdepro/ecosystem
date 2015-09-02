@@ -26,6 +26,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,7 +46,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -91,6 +101,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     LocationManager locationManager ;
     String provider;
     ProgressDialog progress;
+    private boolean reset = false;
+    ArrayList<Marker> markers=new ArrayList<>();
 
     GoogleMap.InfoWindowAdapter adapter;
     private String activeMarker = "myMarker";
@@ -149,7 +161,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         // Getting the name of the provider that meets the criteria
         provider = locationManager.getBestProvider(criteria, false);
-
+        try{
+            getMarkers();
+        }catch (Exception e){
+            Log.i("Error","Fetch");
+        }
         if(provider!=null && !provider.equals("")){
 
             // Get the location from the given provider
@@ -182,7 +198,45 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);
             setUpMapIfNeeded();
         }
+
+        for(int i=0;i<markers.size();i++){
+            Marker m = markers.get(i);
+            m.remove();
+        }
+
+        try{
+            getMarkers();
+        }catch (Exception e){
+            Log.i("Error","Fetch");
+        }
     }
+    public void getMarkers() throws Exception{
+        Ion.with(getApplicationContext())
+                .load("http://ecosquare.herokuapp.com/emp/location")
+                .as(new TypeToken<List<Employees>>(){})
+                .setCallback(new FutureCallback<List<Employees>>() {
+                    @Override
+                    public void onCompleted(Exception e, List<Employees> tweets) {
+                        for (int i = 0; i < tweets.size(); i++) {
+                            // Create a marker for each city in the JSON data.
+                            Employees jsonObj = tweets.get(i);
+                            markers.add(mMap.addMarker(new MarkerOptions()
+                                            .title(jsonObj._id)
+                                            .snippet("50% full")
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
+                                            .position(new LatLng(
+                                                    Double.parseDouble(jsonObj.lat),
+                                                    Double.parseDouble(jsonObj.lon)
+                                            ))
+                            ));
+                        }
+                        for(int i=0;i<markers.size();i++){
+                            Marker m = markers.get(i);
+                        }
+                    }
+                });
+    }
+
 
     public void book(){
         progress = ProgressDialog.show(MapsActivity.this, "Working",
@@ -241,7 +295,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Setting Current Latitude
         lat = location.getLatitude();
 
-        findAddress();
+        if(reset==false)
+            findAddress();
     }
 
     public void findAddress(){
@@ -381,19 +436,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }catch (IOException ex){
             Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
         }       if(activeMarker=="myMarker"){
-            if(myMarker!=null)
+            if(myMarker!=null) {
                 myMarker.remove();
-            myMarker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(lat, lon))
-                    .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
-                    .snippet(addresses.get(0).getLocality()));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
-            myMarker.setDraggable(true);
-            mMap.setOnMarkerClickListener(this);
-            myMarker.showInfoWindow();
-            //mMap.setInfoWindowAdapter(adapter);
-            //adapter.getInfoWindow(myMarker);
+            }
+            if(reset==true) {
+                myMarker = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(myMarker.getPosition().latitude, myMarker.getPosition().longitude))
+                        .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(addresses.get(0).getLocality()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
+                myMarker.setDraggable(true);
+                mMap.setOnMarkerClickListener(this);
+                myMarker.showInfoWindow();
+                //mMap.setInfoWindowAdapter(adapter);
+                //adapter.getInfoWindow(myMarker);
+            }else{
+                myMarker = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lat,lon))
+                        .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                        .snippet(addresses.get(0).getLocality()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
+                myMarker.setDraggable(true);
+                mMap.setOnMarkerClickListener(this);
+                myMarker.showInfoWindow();
+            }
         }
+
     }
 
     @Override
@@ -518,6 +586,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     activeMarker = "y";
                 } else {
                     activeMarker = "myMarker";
+                    reset=true;
                 }
 
             }
@@ -530,6 +599,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     public void locate_me(View v)
     {
+        reset=false;
         onLocationChanged(mMap.getMyLocation());
         call();
     }
@@ -551,6 +621,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         {
             myMarker.showInfoWindow();
 
+        } else{
+            for(int i=0;i<markers.size();i++){
+               if(marker.equals(markers.get(i))){
+                   Marker m = markers.get(i);
+                   m.showInfoWindow();
+               }
+            }
         }
         return true;
     }
