@@ -5,7 +5,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" tools:context=".LoginActivity"
-    android:background="#75a064"
+    android:background="#92d050"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -20,10 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="FOOBAR"
+            android:text="Login"
             android:id="@+id/textView2"
             android:textSize="30dp"
-            android:textColor="#ffffffff" />
+            android:textColor="#000" />
 
 
     </LinearLayout>
@@ -50,8 +50,8 @@
                         android:inputType="textEmailAddress" android:maxLines="1"
                         android:singleLine="true"
                         android:layout_marginBottom="10dp"
-                        android:textColorHint="#ffffffff"
-                        android:textColor="#ffffffff" />
+                        android:textColorHint="#222"
+                        android:textColor="#222" />
 
                     <EditText android:id="@+id/password" android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:hint="@string/prompt_password"
@@ -59,15 +59,15 @@
                         android:imeOptions="actionUnspecified" android:inputType="textPassword"
                         android:maxLines="1" android:singleLine="true"
                         android:layout_marginBottom="10dp"
-                        android:textColorHint="#ffffffff"
-                        android:textColor="#ffffffff" />
+                        android:textColorHint="#222"
+                        android:textColor="#222" />
 
                     <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:layout_marginTop="16dp" android:text="@string/action_sign_in"
                         android:textStyle="bold"
                         android:textColor="#ffffffff"
-                        android:background="#3d5b3e" />
+                        android:background="#000" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -87,6 +87,6 @@
             android:text="Sign up"
             android:id="@+id/signUpTextView"
             android:autoLink="web"
-            android:textColor="#ffffffff" />
+            android:textColor="#000" />
     </LinearLayout>
 </LinearLayout>

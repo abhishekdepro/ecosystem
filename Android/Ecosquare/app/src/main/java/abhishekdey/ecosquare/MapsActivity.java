@@ -5,26 +5,39 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +51,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -91,12 +105,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
 
     public GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Marker myMarker,x,y;
+    private Marker myMarker,x,y,_new;
     private double lat,lon;
     LocationManager locationManager ;
     String provider;
@@ -106,6 +122,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     GoogleMap.InfoWindowAdapter adapter;
     private String activeMarker = "myMarker";
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private String[] drawerListViewItems;
+    private ListView drawerListView;
+    private Timer mTimer1;
+    private TimerTask mTt1;
+    private Handler mTimerHandler = new Handler();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +148,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         bar.setLogo(R.drawable.logo);
-        bar.setTitle("  " + "Ecosquare");
         bar.setDisplayUseLogoEnabled(true);
+        bar.setTitle(" " + "Ecosquare");
+
+
+        drawerListViewItems = getResources().getStringArray(R.array.items);
+
+        // get ListView defined in activity_main.xml
+        drawerListView = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        drawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_listview_item, drawerListViewItems));
+        drawer = (DrawerLayout) findViewById(R.id.drawer);
+
+        setupDrawerLayout();
+
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
         FloatingActionButton button= (FloatingActionButton) findViewById(R.id.add);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,19 +197,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         // Getting the name of the provider that meets the criteria
         provider = locationManager.getBestProvider(criteria, false);
-        try{
-            getMarkers();
-        }catch (Exception e){
-            Log.i("Error","Fetch");
-        }
+
+        startTimer();
+
+        progress = ProgressDialog.show(MapsActivity.this, "Location",
+                "Finding your location", true);
+
+
+
         if(provider!=null && !provider.equals("")){
 
             // Get the location from the given provider
             Location location = locationManager.getLastKnownLocation(provider);
 
             locationManager.requestLocationUpdates(provider, 20000, 1, this);
-
-            if(location!=null){
+            if(SplashScreen.loc!=null){
+                onLocationChanged(SplashScreen.loc);
+            }
+            else if(location!=null){
                 Toast.makeText(getBaseContext(), "Location is: "+location.getLatitude(), Toast.LENGTH_SHORT).show();
                 onLocationChanged(location);
             }
@@ -183,13 +224,120 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }else{
             Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
         }
+
+
+
+    }
+
+
+    private void stopTimer(){
+        if(mTimer1 != null){
+            mTimer1.cancel();
+            mTimer1.purge();
+        }
+    }
+
+    private void startTimer(){
+        mTimer1 = new Timer();
+        mTt1 = new TimerTask() {
+            public void run() {
+                mTimerHandler.post(new Runnable() {
+                    public void run(){
+                        if(markers.isEmpty()==false){
+                            for(int i=0;i<markers.size();i++){
+                                Marker m = markers.get(i);
+                                m.remove();
+                            }
+                        }
+
+                        try{
+                            getMarkers();
+                        }catch (Exception e){
+                            Log.i("Error","Fetch");
+                        }
+                    }
+                });
+            }
+        };
+
+        mTimer1.schedule(mTt1, 1, 30000);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // Handle the drawer Actions
+        if(mDrawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupDrawerLayout(){
+
+        // Instantiate the Drawer Toggle
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.app_name, R.string.app_name){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+                getSupportActionBar().setTitle(" " + "Ecosquare");
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+                getSupportActionBar().setTitle(" " + "Ecosquare");
+            }
+        };
+
+        // Set the Toggle on the Drawer, And tell the Action Bar Up Icon to show
+        drawer.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
+        stopTimer();
         Log.i("Tag", "onPause, done");
+
     }
     @Override
     public void onResume() {
@@ -199,16 +347,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             setUpMapIfNeeded();
         }
 
-        for(int i=0;i<markers.size();i++){
-            Marker m = markers.get(i);
-            m.remove();
-        }
-
-        try{
-            getMarkers();
-        }catch (Exception e){
-            Log.i("Error","Fetch");
-        }
+        startTimer();
     }
     public void getMarkers() throws Exception{
         Ion.with(getApplicationContext())
@@ -220,22 +359,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         for (int i = 0; i < tweets.size(); i++) {
                             // Create a marker for each city in the JSON data.
                             Employees jsonObj = tweets.get(i);
-                            markers.add(mMap.addMarker(new MarkerOptions()
-                                            .title(jsonObj._id)
-                                            .snippet("50% full")
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
-                                            .position(new LatLng(
-                                                    Double.parseDouble(jsonObj.lat),
-                                                    Double.parseDouble(jsonObj.lon)
-                                            ))
-                            ));
+
+                                _new = mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(Double.parseDouble(jsonObj.lat),Double.parseDouble(jsonObj.lon)))
+                                        .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
+                                        .snippet("50% full"));
+
+                            markers.add(_new);
                         }
-                        for(int i=0;i<markers.size();i++){
+                        for (int i = 0; i < markers.size(); i++) {
                             Marker m = markers.get(i);
                         }
                     }
                 });
     }
+
 
 
     public void book(){
@@ -264,21 +402,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
-                                if(e!=null){
-                                    Toast.makeText(getBaseContext(), "Data : "+e.getStackTrace(), Toast.LENGTH_LONG).show();
-                                }else{
+                                if (e != null) {
+                                    Toast.makeText(getBaseContext(), "Data : " + e.getStackTrace(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progress.dismiss();
+                                        }
+                                    });
                                     Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        progress.dismiss();
-                    }
-                });
+
             }
         }).start();
     }
@@ -297,6 +435,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(reset==false)
             findAddress();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progress.dismiss();
+            }
+        });
+
     }
 
     public void findAddress(){
@@ -555,7 +700,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
          x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("50% full"));
 
-         y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
+        y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
 
         x.showInfoWindow();
         y.showInfoWindow();
@@ -620,6 +765,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         else if (marker.equals(myMarker))
         {
             myMarker.showInfoWindow();
+
+
+
 
         } else{
             for(int i=0;i<markers.size();i++){

@@ -1,50 +1,78 @@
 
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawerLayout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-        android:layout_alignParentTop="true">
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <fragment
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add"
+                android:onClick="locate_me"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="360dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:clickable="true"
+                android:src="@drawable/add"
+                app:backgroundTint="#000"
+                android:layout_gravity="right|end"
+                app:layout_anchorGravity="right|end"/>
 
 
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add"
-            android:onClick="locate_me"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="360dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:clickable="true"
-            android:src="@drawable/add"
-            app:backgroundTint="#000"
-            android:layout_gravity="right|end"
-            app:layout_anchorGravity="right|end"/>
 
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:onClick="locate_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:src="@drawable/mylocation"
+                app:backgroundTint="#000000"
+                android:layout_gravity="bottom|end"
+                app:layout_anchorGravity="right|end"/>
+
+        </FrameLayout>
+
+        <ListView android:id="@+id/left_drawer"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:dividerHeight="4dp"
+            android:background="#CC000000"
+            android:paddingTop="20sp"
+            android:paddingLeft="15sp"
+            android:paddingRight="15sp"
+            />
+
+        <FrameLayout
+            android:id="@+id/nav_container"
+            android:background="@android:color/white"
+            android:layout_gravity="start"
+            android:layout_width="240dp"
+            android:layout_height="fill_parent"/>
 
 
+    </android.support.v4.widget.DrawerLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:onClick="locate_me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/mylocation"
-            app:backgroundTint="#000000"
-            android:layout_gravity="bottom|end"
-            app:layout_anchorGravity="right|end"/>
-
-    </fragment></android.support.v4.widget.DrawerLayout>
+</RelativeLayout>
