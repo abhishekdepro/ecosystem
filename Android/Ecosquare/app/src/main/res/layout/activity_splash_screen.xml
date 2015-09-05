@@ -23,17 +23,6 @@
         android:text="www.androidhive.info"
         android:id="@+id/textView" />
 
-    <Button
-        android:id="@+id/angry_btn"
 
-        android:text="Login"
-        android:textColor="#8DDF5F"
-        android:textSize="30sp"
-        android:onClick="buttonClickFunction"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:background="@drawable/shape"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/textView" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -67,6 +68,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -119,13 +121,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     ProgressDialog progress;
     private boolean reset = false;
     ArrayList<Marker> markers=new ArrayList<>();
-
-    GoogleMap.InfoWindowAdapter adapter;
     private String activeMarker = "myMarker";
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] drawerListViewItems;
     private ListView drawerListView;
+    private String[] navMenuTitles;
+    private TypedArray navMenuIcons;
+
+    private ArrayList<NavDrawerItem> navDrawerItems;
+    private NavDrawerListAdapter adapter;
     private Timer mTimer1;
     private TimerTask mTt1;
     private Handler mTimerHandler = new Handler();
@@ -145,21 +150,60 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         ActionBar bar = getSupportActionBar();
-        bar.setDisplayShowHomeEnabled(true);
+        /*bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         bar.setLogo(R.drawable.logo);
         bar.setDisplayUseLogoEnabled(true);
-        bar.setTitle(" " + "Ecosquare");
+        bar.setTitle(" " + "Ecosquare");*/
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.custom_logo);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 
-
-        drawerListViewItems = getResources().getStringArray(R.array.items);
+        //drawerListViewItems = getResources().getStringArray(R.array.items);
 
         // get ListView defined in activity_main.xml
-        drawerListView = (ListView) findViewById(R.id.left_drawer);
+        //drawerListView = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
-        drawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, drawerListViewItems));
+        //drawerListView.setAdapter(new ArrayAdapter<String>(this,
+         //       R.layout.drawer_listview_item, drawerListViewItems));
+
+
+        // load slide menu items
+        navMenuTitles = getResources().getStringArray(R.array.items);
+
+        // nav drawer icons from resources
+        navMenuIcons = getResources()
+                .obtainTypedArray(R.array.nav_drawer_icons);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer);
+        drawerListView = (ListView) findViewById(R.id.left_drawer);
+
+        navDrawerItems = new ArrayList<>();
+
+        // adding nav drawer items to array
+        // Home
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+        // Find People
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+        // Photos
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        // Communities, Will add a counter here
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+        // Pages
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        // What's hot, We  will add a counter here
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
+
+
+        // Recycle the typed array
+        navMenuIcons.recycle();
+
+        // setting the nav drawer list adapter
+        adapter = new NavDrawerListAdapter(getApplicationContext(),
+                navDrawerItems);
+        drawerListView.setAdapter(adapter);
+
         drawer = (DrawerLayout) findViewById(R.id.drawer);
 
         setupDrawerLayout();
@@ -173,7 +217,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 book();
                                 break;
@@ -188,12 +233,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                 builder.setMessage("Book a Pickup?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
+
             }
         });
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         // Creating an empty criteria object
         Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
 
         // Getting the name of the provider that meets the criteria
         provider = locationManager.getBestProvider(criteria, false);
@@ -210,7 +258,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             // Get the location from the given provider
             Location location = locationManager.getLastKnownLocation(provider);
 
-            locationManager.requestLocationUpdates(provider, 20000, 1, this);
+            locationManager.requestLocationUpdates(provider, 3000, 1, this);
             if(SplashScreen.loc!=null){
                 onLocationChanged(SplashScreen.loc);
             }
@@ -300,6 +348,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if (id == R.id.logout) {
+            ParseUser.logOut();
+            ParseUser currentUser = ParseUser.getCurrentUser();
         }
 
         return super.onOptionsItemSelected(item);
@@ -360,10 +411,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             // Create a marker for each city in the JSON data.
                             Employees jsonObj = tweets.get(i);
 
-                                _new = mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(Double.parseDouble(jsonObj.lat),Double.parseDouble(jsonObj.lon)))
-                                        .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
-                                        .snippet("50% full"));
+                            _new = mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(Double.parseDouble(jsonObj.lat), Double.parseDouble(jsonObj.lon)))
+                                    .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
+                                    .snippet("50% full"));
 
                             markers.add(_new);
                         }
@@ -375,6 +426,48 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
 
+
+    public void animate(LatLng location, final Marker m){
+        final LatLng startPosition = m.getPosition();
+        final LatLng finalPosition = location;
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
+        final float durationInMs = 3000;
+        final boolean hideMarker = false;
+
+        handler.post(new Runnable() {
+            long elapsed;
+            float t;
+            float v;
+
+            @Override
+            public void run() {
+                // Calculate progress using interpolator
+                elapsed = SystemClock.uptimeMillis() - start;
+                t = elapsed / durationInMs;
+                v = interpolator.getInterpolation(t);
+
+                LatLng currentPosition = new LatLng(
+                        startPosition.latitude*(1-t)+finalPosition.latitude*t,
+                        startPosition.longitude*(1-t)+finalPosition.longitude*t);
+
+                m.setPosition(currentPosition);
+
+                // Repeat till progress is complete.
+                if (t < 1) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        m.setVisible(false);
+                    } else {
+                        m.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
 
     public void book(){
         progress = ProgressDialog.show(MapsActivity.this, "Working",
@@ -435,12 +528,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(reset==false)
             findAddress();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progress.dismiss();
-            }
-        });
+        progress.dismiss();
 
     }
 
@@ -589,7 +677,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(myMarker.getPosition().latitude, myMarker.getPosition().longitude))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
                 myMarker.showInfoWindow();
@@ -600,7 +688,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(lat,lon))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 11.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
                 myMarker.showInfoWindow();
@@ -710,7 +798,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-
+                activeMarker = "myMarker";
+                reset=true;
             }
 
             @Override
@@ -765,7 +854,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         else if (marker.equals(myMarker))
         {
             myMarker.showInfoWindow();
-
 
 
 

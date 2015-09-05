@@ -23,14 +23,18 @@
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/tick</item>
-        <item>@drawable/red_icon</item>
-
+        <item>@drawable/account</item>
+        <item>@drawable/payment</item>
+        <item>@drawable/history</item>
+        <item>@drawable/share</item>
+        <item>@drawable/help</item>
+        <item>@drawable/info</item>
     </array>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_contact">Contact No.</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login</string>
     <string name="invalid_email">This email address is invalid</string>
@@ -39,5 +43,8 @@
     <string name="field_required">This field is required</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_start">StartActivity</string>
+    <string name="sign_up"><u>Sign Up</u></string>
+    <string name="title_activity_sign_up">SignUp</string>
+
 
 </resources>
