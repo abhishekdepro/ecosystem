@@ -250,6 +250,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         progress = ProgressDialog.show(MapsActivity.this, "Location",
                 "Finding your location", true);
+        progress.setCanceledOnTouchOutside(true);
 
 
 
@@ -520,6 +521,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Getting reference to TextView tv_longitude
 
 
+        progress.dismiss();
         // Setting Current Longitude
         lon = location.getLongitude();
 
@@ -528,7 +530,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(reset==false)
             findAddress();
-        progress.dismiss();
 
     }
 

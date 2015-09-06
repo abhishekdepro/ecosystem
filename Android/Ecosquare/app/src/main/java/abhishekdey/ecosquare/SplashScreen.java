@@ -2,12 +2,16 @@ package abhishekdey.ecosquare;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,7 +32,7 @@ import com.parse.ParseUser;
 
 public class SplashScreen extends Activity {
 
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 6000;
     LocationManager locationManager ;
     String provider;
     public static Location loc;
@@ -39,12 +43,44 @@ public class SplashScreen extends Activity {
         startActivity(intent);
 
     }
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if(isNetworkAvailable()==false){
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            int pid = android.os.Process.myPid();
+                            android.os.Process.killProcess(pid);
+                            System.exit(0);
+                            break;
 
 
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+            builder.setMessage("We cannot find any internet connection on your device. Please turn internet on.").setPositiveButton("Ok", dialogClickListener)
+                    .show();
+        }
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
@@ -118,8 +154,7 @@ public class SplashScreen extends Activity {
                 Intent i = new Intent(SplashScreen.this, Login.class);
                 startActivity(i);
 
-                // close this activity
-                finish();
+
             }
         }, SPLASH_TIME_OUT);
     }
