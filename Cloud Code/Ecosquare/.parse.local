@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Ecosquare": {
+      "applicationId": "Lg41go4Abua0UIYThLXKHcsgWbWpuVbVehru45xP"
+    },
+    "_default": {
+      "link": "Ecosquare"
+    }
+  }
+}
