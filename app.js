@@ -33,6 +33,7 @@ var connection_string = 'mongodb://example.com';
 var db = mongojs(connection_string, ['db_name']);
 var user = db.collection("user");
 var transactions = db.collection("transaction");
+var employees = db.collection("emp");
 
 /******************************Routes******************************/
 
@@ -51,8 +52,17 @@ server.get({path  : TRANSACTION_PATH , version : '0.0.1'} , findAllTransactions)
 server.get({path  : TRANSACTION_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
 server.get({path  : TRANSACTION_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
 server.post({path : TRANSACTION_PATH , version: '0.0.1'} , onTransactionStart);
-server.put({path  : TRANSACTION_PATH +'/update/:id/:u_id' , version: '0.0.1'} , onTransactionEnd);
+server.put({path  : TRANSACTION_PATH +'/update/:emp_id/:t_id' , version: '0.0.1'} , onTransactionEnd);
 server.del({path  : TRANSACTION_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
+//==================================================================//
+//EMPLOYEE Routes
+var EMP_PATH = '/emp'
+server.get({path  : EMP_PATH , version : '0.0.1'} , findAllEmployees);
+server.get({path  : EMP_PATH + '/location', version : '0.0.1'} , getEmployeesbyLocation);
+server.get({path  : EMP_PATH +'/:userId' , version: '0.0.1'} ,findEmployeebyID);
+server.post({path : EMP_PATH , version: '0.0.1'} , createEmployee);
+server.put({path  : EMP_PATH +'/location/update/:emp_id/:lat/:lon' , version: '0.0.1'} , onEmployeeLocationChanged);
+//server.del({path  : EMP_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteEmployee);
 //==================================================================//
 
 /*****************************Functions****************************/
@@ -177,12 +187,12 @@ function onTransactionStart(req, res, next){
 
 function onTransactionEnd(req,res,next){
   var query = {
-    _id : req.params.id
+    _id : req.params.emp_id
   }
   var change = {
-    $set : {u_id : req.params.u_id, status : req.params.status}
+    $push : {transactions:req.params.t_id}
   }
-  transactions.update(query, change, function(err, success){
+  employees.update(query, change, function(err, success){
       if(err){
         return next(err);
       }else{
@@ -194,6 +204,85 @@ function onTransactionEnd(req,res,next){
 function findAllTransactions(req, res , next){ //finds all users listed
     res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
     transactions.find().limit(20).sort({postedOn : -1} , function(err , success){
+        //console.log(_token);
+        console.log('Response error '+err);
+        if(success){
+            res.end(JSON.stringify(success,null,3)); //JSON response
+        }else{
+            return next(err);
+        }
+
+    });
+
+}
+
+//end TRANSACTION CRUD operations
+//==================================================================//
+//EMPLOYEE CRUD operations
+function createEmployee(req, res, next){
+  var emp = {};
+  var transactions = [];
+  var obj=req.body;
+  generateToken(16);
+  emp._id = obj.id;
+  emp.name = obj.name;
+  emp.lat = obj.lat;
+  emp.lon = obj.lon;
+  emp.transactions = transactions;
+  emp.photo = "http://api.randomuser.me/portraits/thumb/women/12.jpg";
+
+  employees.save(emp , function(err , success){
+      if(success){
+          res.send(201 , transaction);
+          return next();
+      }else{
+          return next(err);
+      }
+  });
+}
+
+function findEmployeebyID(req,res){
+    employees.findOne({_id:req.params.userId}, function(err, success){
+        if(success){
+            res.end(JSON.stringify(success,null,3));
+        }else{
+            res.end(err);
+        }
+    });
+}
+
+function onEmployeeLocationChanged(req, res, next){
+    var query = {
+      _id : req.params.emp_id
+    }
+    var change = {
+      $set : { lat:req.params.lat , lon:req.params.lon }
+    }
+    employees.update(query, change, function(err, success){
+        if(err){
+          return next(err);
+        }else{
+          res.end(JSON.stringify(success,null,3));
+        }
+    });
+}
+
+function getEmployeesbyLocation(req, res, next){
+  employees.find({_id : {$ne : null}},{lat:1,lon:1}).limit(20).sort({postedOn : -1} , function(err , success){
+
+      console.log('Response error '+err);
+      if(success){
+          res.end(JSON.stringify(success,null,3)); //JSON response
+      }else{
+          return next(err);
+      }
+
+  });
+}
+
+function findAllEmployees(req, res , next){ //finds all users listed
+    res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
+    employees.find().limit(20).sort({postedOn : -1} , function(err , success){
         //console.log(_token);
         console.log('Response error '+err);
         if(success){
