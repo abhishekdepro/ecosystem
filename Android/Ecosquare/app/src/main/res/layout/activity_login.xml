@@ -99,6 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="5"
+        android:onClick="buttonClickFunction"
         android:gravity="bottom|center_horizontal">
 
         <TextView
@@ -108,7 +109,6 @@
             android:text="Already registered? Log in"
             android:id="@+id/signUpTextView"
             android:autoLink="web"
-            android:onClick="buttonClickFunction"
             android:textColor="#000" />
     </LinearLayout>
 </LinearLayout>

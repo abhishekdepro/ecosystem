@@ -25,14 +25,24 @@
                 android:id="@+id/add"
                 android:onClick="locate_me"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="360dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:clickable="true"
                 android:src="@drawable/add"
                 app:backgroundTint="#000"
-                android:layout_gravity="right|end"
+                android:layout_gravity="bottom|center_horizontal"
+                app:layout_anchorGravity="right|end"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/calculator"
+                android:onClick="calculate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:src="@drawable/cash"
+                app:backgroundTint="#000"
+                android:layout_gravity="bottom|left"
                 app:layout_anchorGravity="right|end"/>
 
 
