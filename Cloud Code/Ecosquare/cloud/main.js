@@ -5,9 +5,17 @@ Parse.Cloud.define("hello", function(request, response) {
   response.success("Hello world!");
 });
 
+function hasWhiteSpace(s) {
+  return s.indexOf(' ') >= 0;
+}
+
+
 Parse.Cloud.afterSave(Parse.User, function(request) {
+
   var _id = request.object.get('username');
-  var _name = request.object.get('Name');
+  if(hasWhiteSpace(request.object.get('Name'))){
+    var _name = request.object.get('Name').split(' ').join('%20');
+  }
   var _lat = request.object.get('Latitude');
   var _lon = request.object.get('Longitude');
   var _email = request.object.get('email');
