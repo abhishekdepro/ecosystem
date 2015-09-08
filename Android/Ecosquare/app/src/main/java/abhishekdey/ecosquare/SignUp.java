@@ -48,7 +48,7 @@ public class SignUp extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
+        //getMenuInflater().inflate(R.menu.menu_sign_up, menu);
         return true;
     }
 
@@ -65,6 +65,7 @@ public class SignUp extends AppCompatActivity {
                     editor.commit();
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override

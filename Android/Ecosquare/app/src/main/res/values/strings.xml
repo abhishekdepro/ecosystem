@@ -46,6 +46,7 @@
     <string name="sign_up"><u>Sign Up</u></string>
     <string name="title_activity_sign_up">SignUp</string>
     <string name="calculator"><u>Weight Calculator</u></string>
+    <string name="title_activity_estimate">Estimate</string>
 
 
 </resources>

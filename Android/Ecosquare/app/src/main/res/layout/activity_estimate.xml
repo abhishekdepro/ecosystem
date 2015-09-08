@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical" android:paddingBottom="10dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="0dp" tools:context=".LoginActivity"
+    android:background="@drawable/background"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:weightSum="6">
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Calculate Weight"
+            android:id="@+id/textView2"
+            android:textSize="30dp"
+            android:textColor="#000" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical|center_horizontal">
+        <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="vertical">
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <RadioButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/paper_radio"
+                            android:text="Paper                   "
+                            android:textSize="18dp"
+                            />
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/plastic_radio"
+                            android:text="Plastic"
+                            android:textSize="18dp"
+                            />
+                    </RadioGroup>
+
+                    <EditText android:id="@+id/days" android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Number of days of Newspaper"
+                        android:imeOptions="actionUnspecified" android:inputType="textPersonName"
+                        android:maxLines="1" android:singleLine="true"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="#222"
+                        android:textColor="#222" />
+
+
+
+                    <TextView android:id="@+id/wtView" android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="30dp"
+                        android:hint="0 Kg"
+                        android:imeActionLabel="@string/action_sign_in"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1" android:singleLine="true"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="#222"
+                        android:textColor="#222" />
+
+                    <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp" android:text="Book a pickup"
+                        android:textSize="18dp"
+                        android:textColor="#000"
+
+                        android:onClick="signUp"
+                        android:background="#DD92d050" />
+
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
+</LinearLayout>

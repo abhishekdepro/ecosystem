@@ -456,8 +456,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 v = interpolator.getInterpolation(t);
 
                 LatLng currentPosition = new LatLng(
-                        startPosition.latitude*(1-t)+finalPosition.latitude*t,
-                        startPosition.longitude*(1-t)+finalPosition.longitude*t);
+                        startPosition.latitude * (1 - t) + finalPosition.latitude * t,
+                        startPosition.longitude * (1 - t) + finalPosition.longitude * t);
 
                 m.setPosition(currentPosition);
 
@@ -806,7 +806,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             @Override
             public void onMarkerDragStart(Marker marker) {
                 activeMarker = "myMarker";
-                reset=true;
+                reset = true;
             }
 
             @Override
@@ -827,7 +827,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     activeMarker = "y";
                 } else {
                     activeMarker = "myMarker";
-                    reset=true;
+                    reset = true;
                 }
 
             }
@@ -845,91 +845,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         call();
     }
 
-    public void calculate(View v){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    public void gotocalculator(View v){
+        Intent intent = new Intent(getApplicationContext(), Estimate.class);
+        startActivity(intent);
 
-        LinearLayout layout = new LinearLayout(this);
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(parms);
-
-        layout.setGravity(Gravity.CLIP_VERTICAL);
-        layout.setPadding(2, 2, 2, 2);
-
-        final TextView tv = new TextView(this);
-        tv.setText(R.string.calculator);
-        tv.setPadding(40, 40, 40, 40);
-        tv.setGravity(Gravity.CENTER);
-        tv.setTextSize(20);
-
-        final EditText et = new EditText(this);
-        et.setGravity(Gravity.CENTER_HORIZONTAL);
-        et.setInputType(InputType.TYPE_CLASS_NUMBER);
-        final String etStr = et.getText().toString();
-
-        et.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                // you can call or do what you want with your EditText here
-                try {
-                    double wt = Calculator.calculatePaper(Double.parseDouble(et.getText().toString()));
-                    tv.setText(wt+" Kg");
-                }catch(Exception ex){
-                    tv.setText("0 Kg");
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
-
-
-        TextView tv1 = new TextView(this);
-        tv1.setPadding(40,0,0,0);
-        tv1.setText("Enter number of days of Newspaper:");
-
-        LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tv1Params.bottomMargin = 5;
-        layout.addView(tv1,tv1Params);
-        layout.addView(et, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        alertDialogBuilder.setView(layout);
-        alertDialogBuilder.setTitle("Calculate");
-        // alertDialogBuilder.setMessage("Input Student ID");
-        alertDialogBuilder.setCustomTitle(tv);
-
-
-        // alertDialogBuilder.setMessage(message);
-        alertDialogBuilder.setCancelable(false);
-
-        // Setting Negative "Cancel" Button
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-            }
-        });
-
-        // Setting Positive "Yes" Button
-        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-                    Intent intent = new Intent( MapsActivity.this,
-                            MapsActivity.class); startActivity(intent);
-
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        try {
-            alertDialog.show();
-        } catch (Exception e) {
-            // WindowManager$BadTokenException will be caught and the app would
-            // not display the 'Force Close' message
-            e.printStackTrace();
-        }
     }
 
     @Override
