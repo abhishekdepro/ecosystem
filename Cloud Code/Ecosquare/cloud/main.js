@@ -10,18 +10,22 @@ function hasWhiteSpace(s) {
 }
 
 
+
+
 Parse.Cloud.afterSave(Parse.User, function(request) {
 
   var _id = request.object.get('username');
   if(hasWhiteSpace(request.object.get('Name'))){
     var _name = request.object.get('Name').split(' ').join('%20');
+  }else{
+    var _name = request.object.get('Name');
   }
   var _lat = request.object.get('Latitude');
   var _lon = request.object.get('Longitude');
   var _email = request.object.get('email');
   Parse.Cloud.httpRequest({
 
-    url: "http://ecosquare.herokuapp.com/user?id="+_id+"&name="+_name+"&email="+_email+"&address=hbtown&lat="+_lat+"&lon="+_lon,
+    url: "http://ecosquare.herokuapp.com/user?id="+_id+"&name="+_name+"&email="+_email+"&lat="+_lat+"&lon="+_lon,
     method: 'POST',
     headers:{
         'Content-Type': 'application/json'
