@@ -25,7 +25,7 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
   var _email = request.object.get('email');
   Parse.Cloud.httpRequest({
 
-    url: "http://ecosquare.herokuapp.com/user?id="+_id+"&name="+_name+"&email="+_email+"&lat="+_lat+"&lon="+_lon,
+    url: "http://api.ecosquare.in/user?id="+_id+"&name="+_name+"&email="+_email+"&lat="+_lat+"&lon="+_lon,
     method: 'POST',
     headers:{
         'Content-Type': 'application/json'
