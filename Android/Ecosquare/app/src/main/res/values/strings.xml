@@ -47,6 +47,6 @@
     <string name="title_activity_sign_up">SignUp</string>
     <string name="calculator"><u>Weight Calculator</u></string>
     <string name="title_activity_estimate">Estimate</string>
-
+    <string name="url">http://api.ecosquare.in</string>
 
 </resources>

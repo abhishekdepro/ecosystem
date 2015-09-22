@@ -153,6 +153,7 @@ public class SplashScreen extends Activity {
                 // Start your app main activity
                 Intent i = new Intent(SplashScreen.this, Login.class);
                 startActivity(i);
+               finish();
 
 
             }

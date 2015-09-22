@@ -1,6 +1,8 @@
 package abhishekdey.ecosquare;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -40,9 +43,11 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,6 +62,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -120,6 +126,8 @@ import java.util.TimerTask;
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
 
     public GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    //FrameLayout FragmentContainer = (FrameLayout) findViewById(R.id.frame_container);
+
     private Marker myMarker,x,y,_new;
     private double lat,lon;
     LocationManager locationManager ;
@@ -140,6 +148,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private Timer mTimer1;
     private TimerTask mTt1;
     private Handler mTimerHandler = new Handler();
+    final String[] data ={"one"};
+    final String[] fragments ={
+            "abhishekdey.ecosquare.fragment_home"};
 
 
 
@@ -154,7 +165,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         ActionBar bar = getSupportActionBar();
         /*bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
@@ -163,7 +174,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         bar.setTitle(" " + "Ecosquare");*/
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_logo);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
 
         //drawerListViewItems = getResources().getStringArray(R.array.items);
 
@@ -205,10 +216,62 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Recycle the typed array
         navMenuIcons.recycle();
 
+        class SlideMenuClickListener implements
+                ListView.OnItemClickListener {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                // display view for selected nav drawer item
+                getSupportFragmentManager().beginTransaction().
+                        remove(getSupportFragmentManager().findFragmentById(R.id.map)).commit();
+                displayView(position);
+            }
+
+
+            /**
+             * Diplaying fragment view for selected nav drawer list item
+             * */
+            private void displayView(int position) {
+                // update the main content by replacing fragments
+                Fragment fragment = null;
+                switch (position) {
+                    case 0:
+                        FrameLayout container = (FrameLayout)findViewById(R.id.frame_container);
+                        container.removeAllViews();
+                        fragment = new HomeFragment();
+                        break;
+
+
+                    default:
+                        break;
+                }
+
+                if (fragment != null) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.frame_container, fragment).commit();
+
+                    // update selected item and title, then close the drawer
+                    drawerListView.setItemChecked(position, true);
+                    drawerListView.setSelection(position);
+                    setTitle(navMenuTitles[position]);
+                    drawer.closeDrawer(drawerListView);
+                } else {
+                    // error in creating fragment
+                    Log.e("MainActivity", "Error in creating fragment");
+                }
+            }
+        }
+
         // setting the nav drawer list adapter
         adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         drawerListView.setAdapter(adapter);
+
+        drawerListView.setOnItemClickListener(new SlideMenuClickListener());
+
+
+
 
         drawer = (DrawerLayout) findViewById(R.id.drawer);
 
@@ -286,7 +349,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
 
     private void stopTimer(){
-        if(mTimer1 != null){
+        if(mTimer1 != null) {
             mTimer1.cancel();
             mTimer1.purge();
         }
@@ -358,6 +421,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }else if (id == R.id.logout) {
             ParseUser.logOut();
             ParseUser currentUser = ParseUser.getCurrentUser();
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -381,6 +447,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 invalidateOptionsMenu();
                 getSupportActionBar().setTitle(" " + "Ecosquare");
             }
+
+
         };
 
         // Set the Toggle on the Drawer, And tell the Action Bar Up Icon to show
@@ -388,6 +456,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
+
 
     @Override
     protected void onPause() {
@@ -408,8 +477,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         startTimer();
     }
     public void getMarkers() throws Exception{
+
         Ion.with(getApplicationContext())
-                .load("http://ecosquare.herokuapp.com/emp/location")
+                .load(getString(R.string.url)+"/emp/location")
                 .as(new TypeToken<List<Employees>>(){})
                 .setCallback(new FutureCallback<List<Employees>>() {
                     @Override
@@ -496,7 +566,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 json.addProperty("status", "init");
 
                 Ion.with(getApplicationContext())
-                        .load("http://ecosquare.herokuapp.com/transaction")
+                        .load(getString(R.string.url)+"/transaction")
                         .setJsonObjectBody(json)
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
@@ -526,7 +596,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public void onLocationChanged(Location location) {
         // Getting reference to TextView tv_longitude
 
-
+        try{
         progress.dismiss();
         // Setting Current Longitude
         lon = location.getLongitude();
@@ -536,6 +606,28 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(reset==false)
             findAddress();
+        }catch (Exception ex){
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            int pid = android.os.Process.myPid();
+                            android.os.Process.killProcess(pid);
+                            System.exit(0);
+                            break;
+
+
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+
+            builder.setMessage("Aw Snap! Probably the internet is not talking with me").setPositiveButton("Ok", dialogClickListener)
+                    .show();
+        }
 
     }
 
@@ -665,14 +757,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-
+            if (addresses != null && !addresses.isEmpty()) {
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+            }
         }catch (IOException ex){
             Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
         }       if(activeMarker=="myMarker"){
@@ -684,7 +776,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(myMarker.getPosition().latitude, myMarker.getPosition().longitude))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
                 myMarker.showInfoWindow();
@@ -695,11 +787,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(lat,lon))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
                 myMarker.showInfoWindow();
             }
+            EditText search = (EditText)findViewById(R.id.address_search);
+            search.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1));
         }
 
     }

@@ -1,6 +1,6 @@
 <resources>
 
     <color name="black_overlay">#66000000</color>
-    <color name="status_bar">#FF000000</color>
+    <color name="status_bar">#1d1d1d</color>
 
 </resources>

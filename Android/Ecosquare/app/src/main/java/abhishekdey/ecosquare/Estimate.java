@@ -31,7 +31,7 @@ public class Estimate extends ActionBarActivity {
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         /*ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
@@ -40,7 +40,7 @@ public class Estimate extends ActionBarActivity {
         bar.setTitle("  " + "Ecosquare");*/
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_logo);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         setContentView(R.layout.activity_estimate);
         final EditText et = (EditText)findViewById(R.id.days);
         final TextView tv = (TextView)findViewById(R.id.wtView);
