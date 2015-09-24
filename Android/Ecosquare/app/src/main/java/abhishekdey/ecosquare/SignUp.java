@@ -2,11 +2,13 @@ package abhishekdey.ecosquare;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -23,16 +25,24 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class SignUp extends AppCompatActivity {
     private ProgressDialog progress;
     public static final String PREFS_NAME = "Preferences";
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        }
         /*ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));

@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Login extends AppCompatActivity {
 
     private ProgressDialog progress;
@@ -38,13 +41,19 @@ public class Login extends AppCompatActivity {
     LocationManager locationManager ;
     String provider;
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        }
         ActionBar bar = getSupportActionBar();
         /*bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));

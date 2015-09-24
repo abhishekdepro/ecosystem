@@ -59,6 +59,10 @@
             android:name=".Estimate"
             android:label="@string/title_activity_estimate" >
         </activity>
+        <activity
+            android:name=".SearchAddress"
+            android:label="@string/title_activity_search_address" >
+        </activity>
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@
     <string-array name="items">
         <item>PROFILE</item>
         <item>PAYMENT</item>
-        <item>TRANSACTIONS</item>
+        <item>HISTORY</item>
         <item>REFERRAL</item>
         <item>HELP</item>
         <item>ABOUT</item>
@@ -48,5 +48,6 @@
     <string name="calculator"><u>Weight Calculator</u></string>
     <string name="title_activity_estimate">Estimate</string>
     <string name="url">http://api.ecosquare.in</string>
+    <string name="title_activity_search_address">SearchAddress</string>
 
 </resources>

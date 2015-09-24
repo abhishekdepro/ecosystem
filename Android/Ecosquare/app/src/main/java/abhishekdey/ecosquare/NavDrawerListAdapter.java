@@ -25,6 +25,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
         this.navDrawerItems = navDrawerItems;
     }
 
+
     @Override
     public int getCount() {
         return navDrawerItems.size();

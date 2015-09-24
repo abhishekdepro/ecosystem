@@ -1,5 +1,6 @@
 package abhishekdey.ecosquare;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -16,6 +17,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -34,7 +36,9 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,9 +49,11 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -114,6 +120,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -122,6 +129,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,LocationListener {
 
@@ -129,6 +138,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //FrameLayout FragmentContainer = (FrameLayout) findViewById(R.id.frame_container);
 
     private Marker myMarker,x,y,_new;
+    private Hashtable<String, String> Markers;
     private double lat,lon;
     LocationManager locationManager ;
     String provider;
@@ -152,7 +162,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     final String[] fragments ={
             "abhishekdey.ecosquare.fragment_home"};
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,7 +178,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        }
+        //window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         ActionBar bar = getSupportActionBar();
         /*bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
@@ -182,8 +198,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         //drawerListView = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
-        //drawerListView.setAdapter(new ArrayAdapter<String>(this,
-         //       R.layout.drawer_listview_item, drawerListViewItems));
+        //drawerListView.setAdapter(new ArrayAdapter<>(this,
+       //         R.layout.drawer_listview_item, drawerListViewItems));
 
 
         // load slide menu items
@@ -264,7 +280,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
 
         // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
+        adapter = new NavDrawerListAdapter(this,
                 navDrawerItems);
         drawerListView.setAdapter(adapter);
 
@@ -276,6 +292,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         drawer = (DrawerLayout) findViewById(R.id.drawer);
 
         setupDrawerLayout();
+        final AutoCompleteTextView autocompleteView = (AutoCompleteTextView)findViewById(R.id.address_search);
+        autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(MapsActivity.this, R.layout.list_item));
+        autocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get data associated with the specified position
+                // in the list (AdapterView)
+                String description = (String) parent.getItemAtPosition(position);
+                Toast.makeText(MapsActivity.this, description, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
@@ -378,7 +405,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             }
         };
 
-        mTimer1.schedule(mTt1, 1, 30000);
+        mTimer1.schedule(mTt1, 1, 100000);
     }
 
     @Override
@@ -613,9 +640,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
-                            int pid = android.os.Process.myPid();
-                            android.os.Process.killProcess(pid);
-                            System.exit(0);
+
                             break;
 
 
@@ -779,8 +804,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
+
+                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
                 myMarker.showInfoWindow();
-                //mMap.setInfoWindowAdapter(adapter);
                 //adapter.getInfoWindow(myMarker);
             }else{
                 myMarker = mMap.addMarker(new MarkerOptions()
@@ -790,13 +816,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
+                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
                 myMarker.showInfoWindow();
             }
-            EditText search = (EditText)findViewById(R.id.address_search);
-            search.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1));
+            //EditText search = (EditText)findViewById(R.id.address_search);
+            //search.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1));
         }
 
     }
+
+
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -937,6 +966,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         reset=false;
         onLocationChanged(mMap.getMyLocation());
         call();
+    }
+
+    public void predictaddress(View v){
+        Intent intent = new Intent(getApplicationContext(), SearchAddress.class);
+        startActivity(intent);
     }
 
     public void gotocalculator(View v){
@@ -1080,5 +1114,56 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             }
         }
     }
+    private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        private View view;
+
+        public CustomInfoWindowAdapter() {
+            view = getLayoutInflater().inflate(R.layout.infowindowcustom,
+                    null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+
+            if (MapsActivity.this.myMarker != null
+                    && MapsActivity.this.myMarker.isInfoWindowShown()) {
+                MapsActivity.this.myMarker.hideInfoWindow();
+                MapsActivity.this.myMarker.showInfoWindow();
+            }
+            return null;
+        }
+
+        @Override
+        public View getInfoWindow(final Marker marker) {
+            MapsActivity.this.myMarker = marker;
+
+            String url = null;
+
+
+
+
+            final String title = marker.getTitle();
+            final TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            if (title != null) {
+                titleUi.setText(title);
+            } else {
+                titleUi.setText("");
+            }
+
+            final String snippet = marker.getSnippet();
+            final TextView snippetUi = ((TextView) view
+                    .findViewById(R.id.snippet));
+            if (snippet != null) {
+                snippetUi.setText(snippet);
+            } else {
+                snippetUi.setText("");
+            }
+
+            return view;
+        }
+    }
+
+
 
 }

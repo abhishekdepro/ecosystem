@@ -22,24 +22,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <EditText android:id="@+id/address_search" android:layout_width="match_parent"
-                android:layout_height="42dp" android:hint="250/A, Nirmala Apt."
+            <AutoCompleteTextView android:id="@+id/address_search" android:layout_width="match_parent"
+                android:layout_height="42dp" android:hint="Type your Location"
                 android:imeOptions="actionUnspecified" android:inputType="textPostalAddress"
                 android:maxLines="1" android:singleLine="true"
                 android:layout_margin="10dp"
                 android:paddingLeft="10dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@color/md_white_1000"
-                android:textColorHint="#222"
+                android:elevation="2dp"
+                android:cursorVisible="false"
+                android:textColorHint="#008000"
+                android:textSize="16sp"
+                android:fontFamily="fonts/Raleway.ttf"
                 android:textColor="#222" />
             <ImageButton
                 android:id="@+id/button1"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
+                android:layout_height="40dp"
                 android:src="@drawable/search"
                 android:background="@color/md_white_1000"
                 android:layout_centerVertical="true"
-                android:layout_margin="10dp"
+                android:layout_marginRight="20dp"
+                android:elevation="2dp"
+                android:onClick="predictaddress"
+                android:layout_marginTop="11dp"
                 android:layout_gravity="right"/>
 
             <android.support.design.widget.FloatingActionButton
@@ -61,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:clickable="true"
-                android:src="@drawable/cash"
+                android:src="@drawable/deals"
                 app:backgroundTint="#2A2A2A"
                 android:layout_gravity="bottom|left"
                 app:layout_anchorGravity="right|end"/>
@@ -89,7 +96,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:choiceMode="singleChoice"
-            android:background="#CC1d1d1d"
+            android:background="#DD1d1d1d"
             android:paddingTop="20sp"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
