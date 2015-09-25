@@ -179,7 +179,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         }
         //window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
@@ -378,6 +378,36 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     }
 
+    public void logout(View v){
+        ParseUser.logOut();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void updateUser(View v){
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        dialog.dismiss();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setMessage("Update your details?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -445,7 +475,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return false;
     }
 
     @Override
@@ -541,9 +571,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                             markers.add(_new);
                         }
-                        for (int i = 0; i < markers.size(); i++) {
-                            Marker m = markers.get(i);
-                        }
+
                         }
                     }
                 });}catch (Exception ex){
