@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -241,6 +242,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 getSupportFragmentManager().beginTransaction().
                         remove(getSupportFragmentManager().findFragmentById(R.id.map)).commit();
                 displayView(position);
+                SharedPreferences.Editor editor = getSharedPreferences(SignUp.PREFS_NAME,MODE_PRIVATE).edit();
+                editor.putString("reload", "yes");
+                editor.commit();
             }
 
 
@@ -253,7 +257,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 switch (position) {
                     case 0:
                         FrameLayout container = (FrameLayout)findViewById(R.id.frame_container);
-                        container.removeAllViews();
+                        container.removeAllViewsInLayout();
                         fragment = new HomeFragment();
                         break;
 
@@ -372,6 +376,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
 
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        SharedPreferences prefs = this.getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
+        String Settings = prefs.getString("reload", null);
+        if(Settings.equals("yes")){
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            super.onBackPressed();
+        }
     }
 
 
@@ -504,13 +522,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         startTimer();
     }
     public void getMarkers() throws Exception{
-
+        try{
         Ion.with(getApplicationContext())
                 .load(getString(R.string.url)+"/emp/location")
                 .as(new TypeToken<List<Employees>>(){})
                 .setCallback(new FutureCallback<List<Employees>>() {
                     @Override
                     public void onCompleted(Exception e, List<Employees> tweets) {
+                        if(tweets!=null){
                         for (int i = 0; i < tweets.size(); i++) {
                             // Create a marker for each city in the JSON data.
                             Employees jsonObj = tweets.get(i);
@@ -525,8 +544,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         for (int i = 0; i < markers.size(); i++) {
                             Marker m = markers.get(i);
                         }
+                        }
                     }
-                });
+                });}catch (Exception ex){
+            Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -634,24 +656,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         if(reset==false)
             findAddress();
         }catch (Exception ex){
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-
-                            break;
 
 
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-
-            builder.setMessage("Aw Snap! Probably the internet is not talking with me").setPositiveButton("Ok", dialogClickListener)
-                    .show();
+            Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -790,9 +797,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 String postalCode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
             }
-        }catch (IOException ex){
-            Toast.makeText(getBaseContext(), "Error in parsing", Toast.LENGTH_SHORT).show();
-        }       if(activeMarker=="myMarker"){
+              if(activeMarker=="myMarker"){
             if(myMarker!=null) {
                 myMarker.remove();
             }
@@ -821,6 +826,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             }
             //EditText search = (EditText)findViewById(R.id.address_search);
             //search.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1));
+        }
+        }catch (IOException ex){
+            Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
         }
 
     }
