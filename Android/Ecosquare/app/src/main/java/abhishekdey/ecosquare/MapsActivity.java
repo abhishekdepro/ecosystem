@@ -81,6 +81,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
@@ -202,7 +203,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         //drawerListView.setAdapter(new ArrayAdapter<>(this,
        //         R.layout.drawer_listview_item, drawerListViewItems));
 
-
+        SharedPreferences.Editor editor = getSharedPreferences(SignUp.PREFS_NAME,MODE_PRIVATE).edit();
+        editor.putString("reload", "no");
+        editor.commit();
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.items);
 
@@ -297,14 +300,70 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         setupDrawerLayout();
         final AutoCompleteTextView autocompleteView = (AutoCompleteTextView)findViewById(R.id.address_search);
+
+
+
         autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(MapsActivity.this, R.layout.list_item));
+
+
+
+        autocompleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autocompleteView.setText("");
+                autocompleteView.setCursorVisible(true);
+            }
+        });
+
         autocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get data associated with the specified position
                 // in the list (AdapterView)
-                String description = (String) parent.getItemAtPosition(position);
-                Toast.makeText(MapsActivity.this, description, Toast.LENGTH_SHORT).show();
+                final String description = (String) parent.getItemAtPosition(position);
+                String place_id = PlaceAPI.placesidList.get(0);
+                try{
+                    Ion.with(getApplicationContext())
+                            .load("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place_id+"&key=AIzaSyDghrnfqL5qa-0AambYqvUV0qE-ysWAdJo")
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
+                                    JsonObject obj = result.getAsJsonObject("result");
+                                    JsonObject geometry = obj.getAsJsonObject("geometry");
+                                    JsonObject loc = geometry.getAsJsonObject("location");
+                                    lat = Double.parseDouble(loc.get("lat").toString());
+                                    lon = Double.parseDouble(loc.get("lng").toString());
+
+                                    if(myMarker!=null) {
+                                        myMarker.remove();
+
+
+                                        myMarker = mMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(lat,lon))
+                                                .title(description).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
+                                                .snippet("Kolkata"));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
+                                        myMarker.setDraggable(true);
+                                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                            @Override
+                                            public boolean onMarkerClick(Marker marker) {
+                                                return false;
+                                            }
+                                        });
+
+                                        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+                                        myMarker.showInfoWindow();
+                                        reset = true;
+                                    }
+                                }
+                            });
+                }catch (Exception ex){
+                    Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
+                }
+
+                //Take marker to location
+
             }
         });
 
@@ -379,11 +438,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     public void logout(View v){
-        ParseUser.logOut();
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        startActivity(intent);
-        finish();
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        ParseUser.logOut();
+                        ParseUser currentUser = ParseUser.getCurrentUser();
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setMessage("Logout?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
+
     }
 
     public void updateUser(View v){
@@ -407,19 +487,34 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         builder.setMessage("Update your details?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
     }
-
+    boolean doubleBackToExitPressedOnce = false;
     @Override
     public void onBackPressed()
     {
         SharedPreferences prefs = this.getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
         String Settings = prefs.getString("reload", null);
-        if(Settings.equals("yes")){
-            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-            startActivity(intent);
-            finish();
-        }else {
-            super.onBackPressed();
+
+
+        if (doubleBackToExitPressedOnce) {
+            if(Settings.equals("yes")){
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent);
+                finish();
+            }else {
+                super.onBackPressed();
+            }
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
 

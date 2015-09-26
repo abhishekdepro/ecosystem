@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"/>
 
             <AutoCompleteTextView android:id="@+id/address_search" android:layout_width="match_parent"
-                android:layout_height="42dp" android:hint="Type your Location"
+                android:layout_height="42dp" android:hint="Search your address"
                 android:imeOptions="actionUnspecified" android:inputType="textPostalAddress"
                 android:maxLines="1" android:singleLine="true"
                 android:layout_margin="10dp"
@@ -45,7 +45,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:elevation="2dp"
-                android:onClick="predictaddress"
                 android:layout_marginTop="11dp"
                 android:layout_gravity="right"/>
 
