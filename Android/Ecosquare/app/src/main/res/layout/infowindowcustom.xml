@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/border"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
 
 
@@ -13,8 +13,9 @@
         android:layout_height="wrap_content"
         android:background="#fff"
         android:layout_margin="5dp"
-        android:elevation="4dp"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:elevation="10dp"
+        android:outlineProvider="bounds">
 
         <TextView
             android:id="@+id/title"

@@ -16,6 +16,7 @@
             android:background="@drawable/grass"
             android:orientation="horizontal">
             <com.pkmmte.view.CircularImageView
+                android:id="@+id/photo"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginTop="42dp"

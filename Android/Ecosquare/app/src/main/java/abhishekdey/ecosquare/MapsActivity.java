@@ -11,16 +11,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -84,11 +88,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.kbeanie.imagechooser.api.ImageChooserListener;
+import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.pkmmte.view.CircularImageView;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -139,6 +148,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //FrameLayout FragmentContainer = (FrameLayout) findViewById(R.id.frame_container);
 
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
     private Marker myMarker,x,y,_new;
     private Hashtable<String, String> Markers;
     private double lat,lon;
@@ -322,9 +333,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 // in the list (AdapterView)
                 final String description = (String) parent.getItemAtPosition(position);
                 String place_id = PlaceAPI.placesidList.get(0);
-                try{
+                try {
                     Ion.with(getApplicationContext())
-                            .load("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place_id+"&key=AIzaSyDghrnfqL5qa-0AambYqvUV0qE-ysWAdJo")
+                            .load("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&key=AIzaSyDghrnfqL5qa-0AambYqvUV0qE-ysWAdJo")
                             .asJsonObject()
                             .setCallback(new FutureCallback<JsonObject>() {
                                 @Override
@@ -335,12 +346,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                     lat = Double.parseDouble(loc.get("lat").toString());
                                     lon = Double.parseDouble(loc.get("lng").toString());
 
-                                    if(myMarker!=null) {
+                                    if (myMarker != null) {
                                         myMarker.remove();
 
 
                                         myMarker = mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(lat,lon))
+                                                .position(new LatLng(lat, lon))
                                                 .title(description).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                                                 .snippet("Kolkata"));
                                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
@@ -358,7 +369,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                     }
                                 }
                             });
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
                 }
 
@@ -366,6 +377,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
             }
         });
+
+
+
 
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
@@ -437,6 +451,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     }
 
+
+
     public void logout(View v){
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -467,14 +483,49 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     public void updateUser(View v){
+
+        final EditText _name = (EditText)findViewById(R.id.nameShow);
+        final EditText _email = (EditText)findViewById(R.id.emailShow);
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        dialog.dismiss();
+                    {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run()
+                            {
+                                //Trying Ion
+                                JsonObject json = new JsonObject();
+                                json.addProperty("id", ParseUser.getCurrentUser().getUsername());
+                                json.addProperty("name", _name.getText().toString());
+                                json.addProperty("email", _email.getText().toString());
+                                Log.i("Json",json.toString());
+                                Ion.with(getApplicationContext())
+                                        .load(getString(R.string.url) + "/user/update")
+                                        .setJsonObjectBody(json)
+                                        .asJsonObject()
+                                        .setCallback(new FutureCallback<JsonObject>() {
+                                            @Override
+                                            public void onCompleted(Exception e, JsonObject result) {
+                                                if (e != null) {
+                                                    Toast.makeText(getBaseContext(), "Data : " + e.getStackTrace(), Toast.LENGTH_LONG).show();
+                                                } else {
+
+                                                    Toast.makeText(getBaseContext(), "Updated successfully!", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+
+
+                            }
+                        }).start();
+
                         break;
+                    }
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         dialog.dismiss();
@@ -495,7 +546,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         String Settings = prefs.getString("reload", null);
 
 
-        if (doubleBackToExitPressedOnce) {
+        if (doubleBackToExitPressedOnce || Settings.equals("yes")) {
             if(Settings.equals("yes")){
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(intent);
@@ -506,15 +557,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        if(Settings.equals("no")) {
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
 
-        new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
     }
 
 
@@ -1055,6 +1109,19 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         y.showInfoWindow();
         //x.setDraggable(true);
         //y.setDraggable(true);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latlng) {
+                // TODO Auto-generated method stub
+                lat = latlng.latitude;
+                lon = latlng.longitude;
+                reset = false;
+                findAddress();
+                System.out.println(latlng);
+
+            }
+        });
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -1125,14 +1192,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
         else if (marker.equals(myMarker))
         {
+            new CustomInfoWindowAdapter().getInfoWindow(myMarker);
             myMarker.showInfoWindow();
-
 
 
         } else{
             for(int i=0;i<markers.size();i++){
                if(marker.equals(markers.get(i))){
                    Marker m = markers.get(i);
+                   new CustomInfoWindowAdapter().getInfoWindow(m);
                    m.showInfoWindow();
                }
             }
