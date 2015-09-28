@@ -37,7 +37,7 @@
                 android:fontFamily="fonts/Raleway.ttf"
                 android:textColor="#222" />
             <ImageButton
-                android:id="@+id/button1"
+                android:id="@+id/btn_search"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:src="@drawable/search"

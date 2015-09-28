@@ -2,8 +2,6 @@ package abhishekdey.ecosquare;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,8 +26,10 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -47,6 +47,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -61,6 +62,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -70,6 +72,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -205,6 +208,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
 
+
         //drawerListViewItems = getResources().getStringArray(R.array.items);
 
         // get ListView defined in activity_main.xml
@@ -247,6 +251,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Recycle the typed array
         navMenuIcons.recycle();
 
+
         class SlideMenuClickListener implements
                 ListView.OnItemClickListener {
             @Override
@@ -268,20 +273,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             private void displayView(int position) {
                 // update the main content by replacing fragments
                 Fragment fragment = null;
+                FrameLayout container = (FrameLayout)findViewById(R.id.frame_container);
+
                 switch (position) {
                     case 0:
-                        FrameLayout container = (FrameLayout)findViewById(R.id.frame_container);
+
                         container.removeAllViewsInLayout();
                         fragment = new HomeFragment();
-                        break;
 
+                        break;
 
                     default:
                         break;
                 }
 
                 if (fragment != null) {
-                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.frame_container, fragment).commit();
 
@@ -290,6 +297,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     drawerListView.setSelection(position);
                     setTitle(navMenuTitles[position]);
                     drawer.closeDrawer(drawerListView);
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                    mDrawerToggle.setDrawerIndicatorEnabled(false);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
                 } else {
                     // error in creating fragment
                     Log.e("MainActivity", "Error in creating fragment");
@@ -463,6 +474,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     case DialogInterface.BUTTON_POSITIVE:
                         ParseUser.logOut();
                         ParseUser currentUser = ParseUser.getCurrentUser();
+                        SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences(SignUp.PREFS_NAME, Activity.MODE_PRIVATE).edit();
+                        editor.remove("photo");
+                        editor.commit();
                         Intent intent = new Intent(getApplicationContext(), Login.class);
                         startActivity(intent);
                         finish();
@@ -486,6 +500,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         final EditText _name = (EditText)findViewById(R.id.nameShow);
         final EditText _email = (EditText)findViewById(R.id.emailShow);
+        SharedPreferences prefs = this.getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
+        final String Settings = prefs.getString("updateHit", null);
+
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -516,6 +533,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                                 } else {
 
                                                     Toast.makeText(getBaseContext(), "Updated successfully!", Toast.LENGTH_LONG).show();
+
                                                 }
                                             }
                                         });
@@ -528,15 +546,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     }
 
                     case DialogInterface.BUTTON_NEGATIVE:
+
                         dialog.dismiss();
                         break;
                 }
-            }
+        }
+
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
         builder.setMessage("Update your details?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
+
     }
     boolean doubleBackToExitPressedOnce = false;
     @Override
@@ -701,29 +722,39 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         startTimer();
     }
     public void getMarkers() throws Exception{
+
+
+
         try{
-        Ion.with(getApplicationContext())
-                .load(getString(R.string.url)+"/emp/location")
-                .as(new TypeToken<List<Employees>>(){})
-                .setCallback(new FutureCallback<List<Employees>>() {
-                    @Override
-                    public void onCompleted(Exception e, List<Employees> tweets) {
-                        if(tweets!=null){
-                        for (int i = 0; i < tweets.size(); i++) {
-                            // Create a marker for each city in the JSON data.
-                            Employees jsonObj = tweets.get(i);
+            new Thread(new Runnable() {
 
-                            _new = mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(Double.parseDouble(jsonObj.lat), Double.parseDouble(jsonObj.lon)))
-                                    .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
-                                    .snippet("50% full"));
+                @Override
+                public void run() {
+                    Ion.with(getApplicationContext())
+                            .load(getString(R.string.url)+"/emp/location")
+                            .as(new TypeToken<List<Employees>>(){})
+                            .setCallback(new FutureCallback<List<Employees>>() {
+                                @Override
+                                public void onCompleted(Exception e, List<Employees> tweets) {
+                                    if(tweets!=null){
+                                        for (int i = 0; i < tweets.size(); i++) {
+                                            // Create a marker for each city in the JSON data.
+                                            Employees jsonObj = tweets.get(i);
 
-                            markers.add(_new);
-                        }
+                                            _new = mMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(Double.parseDouble(jsonObj.lat), Double.parseDouble(jsonObj.lon)))
+                                                    .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
+                                                    .snippet("50% full"));
 
-                        }
-                    }
-                });}catch (Exception ex){
+                                            markers.add(_new);
+                                        }
+
+                                    }
+                                }
+                            });
+                }
+            }).start();
+        }catch (Exception ex){
             Toast.makeText(getBaseContext(), "Aw Snap! Probably the internet is not talking with me", Toast.LENGTH_SHORT).show();
         }
     }
@@ -1087,6 +1118,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 setUpMap();
             }
         }
+
     }
 
 
@@ -1153,6 +1185,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
             }
         });
+
+
 
     }
 

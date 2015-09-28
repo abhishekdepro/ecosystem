@@ -65,7 +65,7 @@ public class Login extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), Tutorial.class);
             startActivity(intent);
             finish();
         } else {
@@ -110,6 +110,7 @@ public class Login extends AppCompatActivity {
     public void buttonClickFunction(View v){
         Intent intent = new Intent(getApplicationContext(), SignUp.class);
         startActivity(intent);
+        finish();
     }
 
     public void signUp(View v)

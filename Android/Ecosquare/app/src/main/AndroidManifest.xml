@@ -63,6 +63,10 @@
             android:name=".SearchAddress"
             android:label="@string/title_activity_search_address" >
         </activity>
+        <activity
+            android:name=".Tutorial"
+            android:label="@string/title_activity_tutorial" >
+        </activity>
     </application>
 
 </manifest>

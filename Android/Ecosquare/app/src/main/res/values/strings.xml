@@ -49,5 +49,7 @@
     <string name="title_activity_estimate">Estimate</string>
     <string name="url">http://api.ecosquare.in</string>
     <string name="title_activity_search_address">SearchAddress</string>
+    <string name="title_activity_transparent">TransparentActivity</string>
+    <string name="title_activity_tutorial">Tutorial</string>
 
 </resources>
