@@ -23,9 +23,14 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
   var _lat = request.object.get('Latitude');
   var _lon = request.object.get('Longitude');
   var _email = request.object.get('email');
+  if(request.object.get('Code')!=""){
+    var _code = request.object.get('Code');
+  }else{
+    var _code = undefined;
+  }
   Parse.Cloud.httpRequest({
 
-    url: "http://api.ecosquare.in/user?id="+_id+"&name="+_name+"&email="+_email+"&lat="+_lat+"&lon="+_lon,
+    url: "http://api.ecosquare.in/user?id="+_id+"&name="+_name+"&email="+_email+"&lat="+_lat+"&lon="+_lon+"&code="+_code,
     method: 'POST',
     headers:{
         'Content-Type': 'application/json'
