@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
@@ -64,9 +65,19 @@ public class Login extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         ParseUser currentUser = ParseUser.getCurrentUser();
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
+        String isFirst = prefs.getString("firstTime", "");
         if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(), Tutorial.class);
-            startActivity(intent);
+            if(isFirst.equals("no")){
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent);
+            }else{
+                SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences(SignUp.PREFS_NAME, Activity.MODE_PRIVATE).edit();
+                editor.putString("firstTime", "no");
+                editor.commit();
+                Intent intent = new Intent(getApplicationContext(), Tutorial.class);
+                startActivity(intent);
+            }
             finish();
         } else {
             // show the signup or login screen
@@ -124,6 +135,7 @@ public class Login extends AppCompatActivity {
         ParseUser user = new ParseUser();
         TextView _contact = (TextView) findViewById(R.id.contact);
         EditText _name = (EditText) findViewById(R.id.name);
+        EditText _code = (EditText) findViewById(R.id.ref);
         TextView _email = (TextView) findViewById(R.id.email);
         EditText _password = (EditText)findViewById(R.id.password);
         user.setUsername(_contact.getText().toString());
@@ -132,6 +144,7 @@ public class Login extends AppCompatActivity {
         user.put("Name", _name.getText().toString());
         user.put("Latitude",Double.toString(lat));
         user.put("Longitude",Double.toString(lon));
+        user.put("Code",_code.getText().toString());
 
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {

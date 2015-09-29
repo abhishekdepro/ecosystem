@@ -2,5 +2,5 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="status_bar">#1d1d1d</color>
-
+    <color name="primary_green">#92d050</color>
 </resources>

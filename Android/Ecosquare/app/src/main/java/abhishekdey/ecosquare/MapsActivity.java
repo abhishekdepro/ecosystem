@@ -282,6 +282,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         fragment = new HomeFragment();
 
                         break;
+                    case 2:
+
+                        container.removeAllViewsInLayout();
+                        Intent intent = new Intent(getApplicationContext(), FeedListActivity.class);
+                        startActivity(intent);
+
+                        break;
+                    case 3:
+
+                        container.removeAllViewsInLayout();
+                        Intent refIntent = new Intent(getApplicationContext(), ReferralActivity.class);
+                        startActivity(refIntent);
+
+                        break;
 
                     default:
                         break;

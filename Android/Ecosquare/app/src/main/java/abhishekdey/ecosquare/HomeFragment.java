@@ -55,24 +55,22 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView tv=(TextView) rootView.findViewById(R.id.nameShow);
+        LayoutInflater mInflater = getActivity().getLayoutInflater();
+        View convertView = mInflater.inflate(R.layout.fragment_home, null);
+        final TextView tv=(TextView) convertView.findViewById(R.id.nameShow);
 
-        final TextView tv1=(TextView) rootView.findViewById(R.id.emailShow);
-        TextView tv2=(TextView) rootView.findViewById(R.id.phoneShow);
-        TextView tv3=(TextView) rootView.findViewById(R.id.coinsShow);
-        final TextView tv4=(TextView) rootView.findViewById(R.id.NAME);
-        TextView tv5=(TextView) rootView.findViewById(R.id.hello);
+        final TextView tv1=(TextView) convertView.findViewById(R.id.emailShow);
+        TextView tv2=(TextView) convertView.findViewById(R.id.phoneShow);
+        TextView tv3=(TextView) convertView.findViewById(R.id.coinsShow);
+        final TextView tv4=(TextView) convertView.findViewById(R.id.NAME);
+
 
         tv2.setEnabled(false);
         tv3.setEnabled(false);
 
-        Typeface face= Typeface.createFromAsset(getActivity().getAssets(),
-                "fonts/Raleway.ttf");
-        cv = (CircularImageView)rootView.findViewById(R.id.photo);
-        tv.setTypeface(face);
-        tv1.setTypeface(face);tv2.setTypeface(face);
-        tv3.setTypeface(face);tv4.setTypeface(face);tv5.setTypeface(face);
+
+        cv = (CircularImageView)convertView.findViewById(R.id.photo);
+
 
         SharedPreferences prefs = getActivity().getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
         String ImageUri = prefs.getString("photo", "");
@@ -132,7 +130,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
-        return rootView;
+        return convertView;
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
