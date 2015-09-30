@@ -287,14 +287,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         container.removeAllViewsInLayout();
                         Intent intent = new Intent(getApplicationContext(), FeedListActivity.class);
                         startActivity(intent);
-
+                        finish();
                         break;
                     case 3:
 
                         container.removeAllViewsInLayout();
                         Intent refIntent = new Intent(getApplicationContext(), ReferralActivity.class);
                         startActivity(refIntent);
-
+                        finish();
                         break;
 
                     default:
@@ -659,7 +659,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return false;
+        return true;
     }
 
     @Override
@@ -1162,7 +1162,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 // TODO Auto-generated method stub
                 lat = latlng.latitude;
                 lon = latlng.longitude;
-                reset = false;
+                reset = true;
                 findAddress();
                 System.out.println(latlng);
 

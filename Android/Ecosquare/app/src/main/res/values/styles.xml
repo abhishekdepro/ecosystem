@@ -4,12 +4,13 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
+
         <!--item name="colorControlActivated">#92d050</item>
         <item name="colorControlHighlight">#92d050</item-->
     </style>
 
     <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
-        <item name="android:src">@drawable/expand</item>
+        <item name="android:src">@drawable/notification_none</item>
         <item name="android:background">?android:attr/actionBarItemBackground</item>
         <item name="android:contentDescription">"Lala"</item>
     </style>
@@ -35,7 +36,9 @@
     <color name="accent">#ffffff</color>
     <!-- Base application theme. -->
 
-
+    <style name="MyDrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/status_bar</item>
+    </style>
 
     <style name="TransparentTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>

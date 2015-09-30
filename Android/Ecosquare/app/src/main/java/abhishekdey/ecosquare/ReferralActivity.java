@@ -2,10 +2,12 @@ package abhishekdey.ecosquare;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.parse.Parse;
 import com.parse.ParseUser;
@@ -72,10 +75,21 @@ public class ReferralActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent);
+                finish();
+
+
+    }
+
     public void shareme(View v){
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = "Your referral code is: "+ ParseUser.getCurrentUser().get("Code").toString();
+        String shareBody = "Give your waste to Ecosquare and earn cash/credits. Sign up using my referral code : "+ ParseUser.getCurrentUser().get("Code").toString()
+                +" For details: http://ecosquare.in";
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ecosquare Referral Code");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
