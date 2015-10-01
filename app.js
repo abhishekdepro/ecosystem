@@ -34,16 +34,21 @@ var db = mongojs(connection_string, ['db_name']);
 var user = db.collection("user");
 var transactions = db.collection("transaction");
 var employees = db.collection("emp");
+var referrals = db.collection("referral");
 
 /******************************Routes******************************/
+
+server.get({path  : '/test' , version : '0.0.1'} , test);
+
 
 //==================================================================//
 //USER Routes
 var USER_PATH = '/user'
-server.get({path  : USER_PATH , version : '0.0.1'} , findAllUsers);
+server.get({path  : USER_PATH +'/key/:token', version : '0.0.1'} , findAllUsers);
 server.get({path  : USER_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
 server.get({path  : USER_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
 server.post({path : USER_PATH , version: '0.0.1'} ,createUser);
+server.post({path  : USER_PATH +'/update' , version: '0.0.1'} , updateUser);
 server.del({path  : USER_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser);
 //==================================================================//
 //TRANSACTION Routes
@@ -72,14 +77,24 @@ server.put({path  : EMP_PATH +'/location/update/:emp_id/:lat/:lon' , version: '0
 function generateToken(strength){
   require('crypto').randomBytes(strength, function(ex, buf) {
     token = buf.toString('hex');
-    console.log(token);
   });
 }
+function generateRef(strength){
+  require('crypto').randomBytes(strength, function(ex, buf) {
+    ref = buf.toString('hex');
+  });
+}
+
+function getHome(req,res){
+  res.end('/Views/index.html')
+}
+
 //==================================================================//
 //Start User CRUD operations
 function findAllUsers(req, res , next){ //finds all users listed
     res.setHeader('Access-Control-Allow-Origin','*'); //header set for CORS request
-    user.find().limit(20).sort({postedOn : -1} , function(err , success){ //limit of 20 users
+    if(req.params.token=="abhishekdepro"){
+        user.find().limit(20).sort({postedOn : -1} , function(err , success){ //limit of 20 users
         //console.log(_token);
         console.log('Response error '+err);
         if(success){
@@ -88,7 +103,25 @@ function findAllUsers(req, res , next){ //finds all users listed
             return next(err);
         }
 
+        });
+    }else{
+    user.findOne({token:req.params.token}, function(err, success){
+        if(success){
+            user.find().limit(20).sort({postedOn : -1} , function(err , success){ //limit of 20 users
+        //console.log(_token);
+        console.log('Response error '+err);
+        if(success){
+            res.end(JSON.stringify(success,null,3)); //JSON response
+        }else{
+            return next(err);
+        }
+
+        });
+        }else{
+            res.end(err);
+        }
     });
+    }
 
 }
 
@@ -112,17 +145,51 @@ function findUserbyAddress(req,res){
     });
 }
 
+function test(req,res){
+  var _token = await(generateToken(3));
+  console.log(_token);
+}
+
 function createUser(req , res , next){
     var _user = {};
-    generateToken(16);
-    console.log(token);
+    require('crypto').randomBytes(8, function(ex, buf) {
+      token = buf.toString('hex');
+    });
+    require('crypto').randomBytes(3, function(ex, buf) {
+      ref = buf.toString('hex');
+    });
     _user._id = req.params.id;
     _user.name = req.params.name;
     _user.email = req.params.email;
-    _user.address = req.params.address;
     _user.lat = req.params.lat;
     _user.lon = req.params.lon;
     _user.token = token;
+    _user.ref = ref;
+    if(typeof req.params.code != 'undefined'){
+      _user.code=req.params.code;
+      var _refadd = {};
+      
+      user.findOne({ref:req.params.code}, function(err, success){
+          if(success){
+              _refadd.from = success._id;
+              _refadd.to = req.params.id;
+              _refadd.code = req.params.code;
+              referrals.save(_refadd,function(error,success){
+                  if(success){
+                    res.end(JSON.stringify(success,null,3));
+                  }else{
+                    res.end(error);
+                  }
+              });
+          }else{
+            res.end(err);
+          }
+      });
+      
+      
+    }else{
+      _user.code="N/A";
+    }
     _user.joinDate = new Date();
 
     res.setHeader('Access-Control-Allow-Origin','*');
@@ -137,6 +204,24 @@ function createUser(req , res , next){
             return next(err);
         }
     });
+}
+
+function updateUser(req,res,next){
+  var obj = req.body;
+  console.log(obj);
+  var query = {
+    _id : obj.id
+  }
+  var change = {
+    $set : { name : obj.name, email: obj.email}
+  }
+  user.update(query, change, function(err, success){
+      if(err){
+        return next(err);
+      }else{
+        res.end(JSON.stringify(success,null,3));
+      }
+  });
 }
 
 function deleteUser(req , res , next){
