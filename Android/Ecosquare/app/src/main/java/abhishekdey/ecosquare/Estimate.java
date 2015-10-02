@@ -35,37 +35,18 @@ public class Estimate extends ActionBarActivity {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
         }
-        /*ActionBar bar = getSupportActionBar();
-        bar.setDisplayShowHomeEnabled(true);
+        //window.setStatusBarColor(this.getResources().getColor(R.color.status_bar));
+        ActionBar bar = getSupportActionBar();
+        /*bar.setDisplayShowHomeEnabled(true);
         bar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         bar.setLogo(R.drawable.logo);
         bar.setDisplayUseLogoEnabled(true);
-        bar.setTitle("  " + "Ecosquare");*/
+        bar.setTitle(" " + "Ecosquare");*/
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         setContentView(R.layout.activity_estimate);
-        final EditText et = (EditText)findViewById(R.id.days);
-        final TextView tv = (TextView)findViewById(R.id.wtView);
-        et.addTextChangedListener(new TextWatcher() {
 
-            public void afterTextChanged(Editable s) {
-
-                // you can call or do what you want with your EditText here
-                try {
-                    double wt = Calculator.calculatePaper(Double.parseDouble(et.getText().toString()));
-                    tv.setText(wt + " Kg");
-                } catch (Exception ex) {
-                    tv.setText("0 Kg");
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
     }
 
 
@@ -74,7 +55,7 @@ public class Estimate extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_estimate, menu);
-        return true;
+        return false;
     }
 
     @Override

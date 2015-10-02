@@ -1025,7 +1025,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             }
             if(reset==true) {
                 myMarker = mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(myMarker.getPosition().latitude, myMarker.getPosition().longitude))
+                        .position(new LatLng(lat, lon))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
@@ -1162,6 +1162,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 // TODO Auto-generated method stub
                 lat = latlng.latitude;
                 lon = latlng.longitude;
+                activeMarker="myMarker";
                 reset = true;
                 findAddress();
                 System.out.println(latlng);
