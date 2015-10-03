@@ -2,6 +2,7 @@ package abhishekdey.ecosquare;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -14,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.parse.ParseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +78,7 @@ public class FeedListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         /*Downloading data from below url*/
-        final String url = "http://api.ecosquare.in/transaction";
+        final String url = "http://api.ecosquare.in/transaction/"+ ParseUser.getCurrentUser().getUsername().toString();
         new AsyncHttpTask().execute(url);
     }
 
@@ -140,6 +143,16 @@ public class FeedListActivity extends AppCompatActivity {
                 Log.e(TAG, "Failed to fetch data!");
             }
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(intent);
+        finish();
+
+
     }
 
     private void parseResult(String result) {
