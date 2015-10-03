@@ -1,8 +1,11 @@
 package abhishekdey.ecosquare;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -21,6 +24,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
@@ -49,7 +58,54 @@ public class Estimate extends ActionBarActivity {
 
     }
 
+    public void book(View v){
+       final ProgressDialog progress = ProgressDialog.show(Estimate.this, "Working",
+                "The minions are working..", true);
+        SharedPreferences prefs = this.getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
+        final String _lat = prefs.getString("lat", null);
+        final String _lon = prefs.getString("lon", null);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                //Trying Ion
+                JsonObject json = new JsonObject();
+                json.addProperty("u_id", ParseUser.getCurrentUser().getUsername().toString());
+                json.addProperty("emp_id", "");
+                json.addProperty("lat", _lat);
+                json.addProperty("lon", _lon);
+                json.addProperty("paper", "5");
+                json.addProperty("plastic", "10");
+                json.addProperty("mode", "cash");
+                json.addProperty("status", "init");
+
+                Ion.with(getApplicationContext())
+                        .load(getString(R.string.url)+"/transaction")
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if (e != null) {
+                                    Toast.makeText(getBaseContext(), "Data : " + e.getStackTrace(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progress.dismiss();
+                                        }
+                                    });
+                                    Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+
+            }
+        }).start();
+        finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1221,6 +1221,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     public void gotocalculator(View v){
+        SharedPreferences.Editor editor = getSharedPreferences(SignUp.PREFS_NAME,MODE_PRIVATE).edit();
+        editor.putString("lat", Double.toString(lat));
+        editor.putString("lon", Double.toString(lon));
+        editor.commit();
         Intent intent = new Intent(getApplicationContext(), Estimate.class);
         startActivity(intent);
 
