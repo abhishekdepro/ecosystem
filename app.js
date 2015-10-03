@@ -54,7 +54,7 @@ server.del({path  : USER_PATH +'/delete/:userId' , version: '0.0.1'} ,deleteUser
 //TRANSACTION Routes
 var TRANSACTION_PATH = '/transaction'
 server.get({path  : TRANSACTION_PATH , version : '0.0.1'} , findAllTransactions);
-server.get({path  : TRANSACTION_PATH +'/:userId' , version: '0.0.1'} ,findUserbyID);
+server.get({path  : TRANSACTION_PATH +'/:userId' , version: '0.0.1'} ,findTransactionbyID);
 server.get({path  : TRANSACTION_PATH +'/address/:UserAddress' , version: '0.0.1'} ,findUserbyAddress);
 server.post({path : TRANSACTION_PATH , version: '0.0.1'} , onTransactionStart);
 server.put({path  : TRANSACTION_PATH +'/update/:emp_id/:t_id' , version: '0.0.1'} , onTransactionEnd);
@@ -284,6 +284,16 @@ function onTransactionEnd(req,res,next){
         res.end(JSON.stringify(success,null,3));
       }
   });
+}
+
+function findTransactionbyID(req,res){
+    transactions.findOne({u_id:req.params.userId}, function(err, success){
+        if(success){
+            res.end(JSON.stringify(success,null,3));
+        }else{
+            res.end(err);
+        }
+    });
 }
 
 function findAllTransactions(req, res , next){ //finds all users listed
