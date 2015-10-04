@@ -287,7 +287,7 @@ function onTransactionEnd(req,res,next){
 }
 
 function findTransactionbyID(req,res){
-    transactions.findOne({u_id:req.params.userId}, function(err, success){
+    transactions.find({u_id:req.params.userId}, function(err, success){
         if(success){
             res.end(JSON.stringify(success,null,3));
         }else{
