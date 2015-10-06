@@ -195,7 +195,7 @@
                         android:layout_marginTop="160dp" android:text="Book A Pickup"
                         android:textSize="18dp"
                         android:textColor="#000"
-                        android:onClick="book"
+                        android:onClick="clicked"
                         android:background="#DD92d050" />
 
                 </LinearLayout>

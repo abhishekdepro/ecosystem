@@ -408,32 +408,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         MapsInitializer.initialize(getApplicationContext());
         setUpMapIfNeeded();
-        FloatingActionButton button= (FloatingActionButton) findViewById(R.id.add);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        //FloatingActionButton button= (FloatingActionButton) findViewById(R.id.add);
+        //button.setOnClickListener(new View.OnClickListener() {
 
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                book();
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                builder.setMessage("Book a Pickup?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-
-            }
-        });
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         // Creating an empty criteria object

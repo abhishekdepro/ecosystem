@@ -33,7 +33,13 @@ import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Estimate extends ActionBarActivity {
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new CalligraphyContextWrapper(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +63,29 @@ public class Estimate extends ActionBarActivity {
         setContentView(R.layout.activity_estimate);
 
     }
+    public void clicked(View v){
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-    public void book(View v){
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            book();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(Estimate.this);
+            builder.setMessage("Book a Pickup?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    public void book(){
        final ProgressDialog progress = ProgressDialog.show(Estimate.this, "Working",
                 "The minions are working..", true);
         SharedPreferences prefs = this.getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
