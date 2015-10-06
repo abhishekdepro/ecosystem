@@ -13,6 +13,7 @@
 /********************Libraries and Requirements*********************/
 var mongojs = require('mongojs');
 var restify = require('restify');
+export CODECOV_TOKEN="8112067e-f7ee-4ad8-be71-9818647c70ed"
 var ip_addr = '127.0.0.1';
 var port    =  process.env.PORT || 1337;
 var token;
