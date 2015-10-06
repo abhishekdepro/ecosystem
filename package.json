@@ -4,14 +4,15 @@
   "description": "waste management API",
   "main": "app.js",
   "dependencies": {
+    "codecov.io": "^0.1.6",
+    "crypto": "*",
     "mongojs": "^1.2.1",
     "mongoose": "^4.1.1",
-    "restify": "^3.0.3",
-    "crypto": "*"
+    "restify": "^3.0.3"
   },
   "devDependencies": {},
   "scripts": {
-    "start":"node app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
