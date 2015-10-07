@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <ImageView android:layout_width="match_parent"
+        android:id="@+id/imgview"
+        android:layout_centerHorizontal="true"
+        android:layout_height="170dp" android:src="@drawable/leaf"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_below="@+id/imgview"
+        android:text="Use Coupon PROMO30 to avail extra 30 points"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:background="#000"/>
+
+</RelativeLayout>

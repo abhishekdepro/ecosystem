@@ -1,6 +1,7 @@
 package abhishekdey.ecosquare;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -61,7 +62,12 @@ public class Estimate extends ActionBarActivity {
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         setContentView(R.layout.activity_estimate);
-
+        Dialog settingsDialog = new Dialog(this);
+        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.image_layout
+                ,null));
+        settingsDialog.show();
+        settingsDialog.getWindow().setLayout(400,365);
     }
     public void clicked(View v){
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -131,7 +137,7 @@ public class Estimate extends ActionBarActivity {
 
             }
         }).start();
-        finish();
+        //finish();
     }
 
     @Override
