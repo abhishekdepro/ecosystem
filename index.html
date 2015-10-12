@@ -8,9 +8,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <html>
 	<head>
 		<title>Ecosquare: Cash for Trash</title>
+		<meta name="description" content="An app that helps you recycle your domestic waste. Get cash/credit for giving us the waste.">
+		<link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
+		<link rel="publisher" href="https://plus.google.com/108168472587003558914"/>
 		<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="js/jquery.min.js"></script>
+
 		 <!-- Custom Theme files -->
 		<link href="css/style.css" rel='stylesheet' type='text/css' />
    		 <!-- Custom Theme files -->
@@ -34,6 +38,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		 <!---- start-smoth-scrolling---->
 	</head>
 	<body>
+	<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1483642385288502',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=1483642385288502";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+	
 		<!---- container ---->
 		<div class="container">
 			<!---- header ---->
@@ -78,6 +108,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<ul class="big-btns">
 						<li><a class="btn-gr" target="_blank" href="http://play.google.com/apps/testing/abhishekdey.ecosquare/join">Download</a></li>
 						<li><a class="btn-gr" href="#learn">Learn More</a></li>
+						<li>
+							<div class="fb-share-button" data-href="http://ecosquare.in" data-layout="button_count"></div>
+						</li>
 					</ul>
 					<br/>
 					<div class="notify-grid">
@@ -323,6 +356,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<!----- social-icons ---->
 		</div>
 		<!---- container ---->
+		
 	</body>
 </html>
 
