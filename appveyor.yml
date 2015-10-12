@@ -16,4 +16,5 @@ test_script:
   - npm --version
   # run tests
   - npm test
-  - node app.js
+# Don't actually build.
+build: off
