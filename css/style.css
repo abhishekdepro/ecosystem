@@ -275,7 +275,7 @@ ul.usefull-for li a.u-windows span:hover{
 	position:relative;
 }
 .notify-grid input[type="text"]{
-	width: 60%;
+	width: 70%;
 	padding: 0.9em;
 	border:2px solid #EEE;
 	font-size:1.1em;
@@ -320,7 +320,7 @@ ul.usefull-for li a.u-windows span:hover{
 	font-size: 1.3em;
 	outline: none;
 	position: absolute;
-	right: 0%;
+	right: 10%;
 	transition:0.5s all;
 	-webkit-transition:0.5s all;
 	-moz-transition:0.5s all;
