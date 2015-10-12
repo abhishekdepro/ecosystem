@@ -15,7 +15,7 @@ public class ParseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "Lg41go4Abua0UIYThLXKHcsgWbWpuVbVehru45xP", "hUsTpwaIAyzYtroir8y4XR5SXPz3NpJmHi0FbwUs");
+        Parse.initialize(this, "xxx", "xxx");
         CalligraphyConfig.initDefault("fonts/Raleway.ttf");
     }
 }
