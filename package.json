@@ -4,14 +4,14 @@
   "description": "waste management API",
   "main": "app.js",
   "dependencies": {
+    "await": "*",
     "mongojs": "^1.2.1",
     "mongoose": "^4.1.1",
-    "restify": "4.0.3",
-    "await":"*"
+    "restify": "^4.0.3"
   },
   "devDependencies": {},
   "scripts": {
-    "start":"node app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
