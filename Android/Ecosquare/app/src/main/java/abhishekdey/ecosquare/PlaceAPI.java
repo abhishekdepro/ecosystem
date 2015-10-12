@@ -21,11 +21,12 @@ public class PlaceAPI {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-
-    private static final String API_KEY = "XXXXXXXXX";
+    public static ArrayList<String> resultList = null;
+    public static ArrayList<String> placesidList = null;
+    private static final String API_KEY = "AIzaSyDghrnfqL5qa-0AambYqvUV0qE-ysWAdJo";
 
     public ArrayList<String> autocomplete (String input) {
-        ArrayList<String> resultList = null;
+
 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
@@ -67,8 +68,10 @@ public class PlaceAPI {
 
             // Extract the Place descriptions from the results
             resultList = new ArrayList<String>(predsJsonArray.length());
+            placesidList = new ArrayList<String>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+                placesidList.add(predsJsonArray.getJSONObject(i).getString("place_id"));
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
