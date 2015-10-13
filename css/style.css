@@ -12,7 +12,7 @@ html, body{
 }
 
 .same{
-    line-height: 10px;
+    vertical-align: text-bottom !important;
 }
 
 body a{
