@@ -12,6 +12,8 @@ install:
 branches:
   only:
     - master
+  except:
+    - website
 
 # Post-install test scripts.
 test_script:
