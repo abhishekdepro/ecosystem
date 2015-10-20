@@ -3,6 +3,7 @@ package abhishekdey.ecosquare;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -16,6 +17,7 @@ public class ParseApplication extends Application {
         super.onCreate();
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "xxx", "xxx");
+        ParseInstallation.getCurrentInstallation().saveInBackground();
         CalligraphyConfig.initDefault("fonts/Raleway.ttf");
     }
 }
