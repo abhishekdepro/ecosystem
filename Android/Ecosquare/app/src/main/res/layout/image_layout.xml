@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:layout_below="@+id/imgview"
+        android:layout_alignParentBottom="true"
         android:text="Use Coupon PROMO30 to avail extra 30 points"
         android:gravity="center"
         android:textColor="#fff"

@@ -2,6 +2,7 @@ package abhishekdey.ecosquare;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -402,6 +404,30 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
             }
         });
+        View inf = getLayoutInflater().inflate(R.layout.image_layout
+                , null);
+        Dialog settingsDialog = new Dialog(this);
+        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        settingsDialog.setContentView(inf);
+        settingsDialog.show();
+        settingsDialog.getWindow().setLayout(400, 365);
+        final ImageView imageView = (ImageView)inf.findViewById(R.id.imgview);
+        Ion.with(getApplicationContext())
+                .load(getString(R.string.url)+"/promo")
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        String exists = result.get("exists").toString();
+                        if (exists.equals("1")) {
+                            Ion.with(imageView)
+                                    .placeholder(R.drawable.leaf)
+                                    .error(R.drawable.leaf)
+                                    .load(getString(R.string.url)+"/fetchpromo");
+                        }
+                    }
+                });
+
 
 
 

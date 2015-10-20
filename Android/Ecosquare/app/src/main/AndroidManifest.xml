@@ -21,6 +21,20 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <!--
+      IMPORTANT: Change "abhishekdey.ecosquare.permission.C2D_MESSAGE" in the lines below
+      to match your app's package name + ".permission.C2D_MESSAGE".
+    -->
+    <permission android:protectionLevel="signature"
+        android:name="abhishekdey.ecosquare.permission.C2D_MESSAGE" />
+    <uses-permission android:name="abhishekdey.ecosquare.permission.C2D_MESSAGE" />
 
     <application
         android:name=".ParseApplication"
@@ -33,7 +47,8 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBpGeDFGDgA7wx5WUb6ht1lPLukL_YXMbA" />
+            android:value="AIzaSyDeWLsQ9kW0fg4_Koe2YkpQcj6bhCs5H4c" />
+        <!--AIzaSyBpGeDFGDgA7wx5WUb6ht1lPLukL_YXMbA-->
 
         <activity
             android:name=".MapsActivity"
@@ -88,6 +103,27 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_referral" >
         </activity>
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <!--
+                  IMPORTANT: Change "abhishekdey.ecosquare" to match your app's package name.
+                -->
+                <category android:name="abhishekdey.ecosquare" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
