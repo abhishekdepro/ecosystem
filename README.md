@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/abhishekdepro/ecosystem.png?label=ready&title=Ready)](https://waffle.io/abhishekdepro/ecosystem)
 
 Waste Management API
 
