@@ -11,3 +11,4 @@ Waste Management API
 
 
 [![Stories in Ready](https://badge.waffle.io/abhishekdepro/ecosystem.png?label=ready&title=Ready)](https://waffle.io/abhishekdepro/ecosystem)
+[![Throughput Graph](https://graphs.waffle.io/abhishekdepro/ecosystem/throughput.svg)](https://waffle.io/abhishekdepro/ecosystem/metrics)
