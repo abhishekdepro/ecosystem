@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/abhishekdepro/ecosystem.png?label=ready&title=Ready)](https://waffle.io/abhishekdepro/ecosystem)
+
 
 Waste Management API
 
@@ -8,3 +8,4 @@ Waste Management API
 <image src="https://badge.fury.io/gh/abhishekdepro%2Fecosystem.svg">
 [![Dependencies Freshness](https://david-dm.org/abhishekdepro/ecosystem.svg)](https://david-dm.org/abhishekdepro/ecosystem)
 <image src="https://img.shields.io/badge/ecofriendly-yes-brightgreen.svg">
+[![Stories in Ready](https://badge.waffle.io/abhishekdepro/ecosystem.png?label=ready&title=Ready)](https://waffle.io/abhishekdepro/ecosystem)
