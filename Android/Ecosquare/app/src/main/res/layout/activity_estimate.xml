@@ -23,7 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Type of waste"
             android:id="@+id/textView2"
-            android:textSize="22dp"
+            android:textSize="20dp"
             android:textColor="#000" />
 
 
@@ -104,7 +104,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                             android:id="@+id/box_paper"
-                            android:textSize="18sp"
                         android:paddingRight="32dip"
                         android:text="Paper"/>
                         <CheckBox
@@ -113,14 +112,12 @@
                             android:id="@+id/box_plastic"
                             android:layout_toRightOf="@+id/box_paper"
                             android:layout_gravity="top"
-                            android:textSize="18sp"
                             android:paddingRight="20dip"
                             android:text="Plastic"/>
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/box_glass"
-                            android:textSize="18sp"
                             android:layout_toRightOf="@+id/box_plastic"
                             android:paddingRight="30dip"
                             android:text="Glass"/>
@@ -128,19 +125,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/box_metals"
-                            android:textSize="18sp"
                             android:layout_below="@+id/box_paper"
                             android:paddingRight="26dip"
                             android:text="Metals"/>
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="18sp"
                             android:id="@+id/box_metal"
                             android:layout_below="@+id/box_paper"
                             android:layout_toRightOf="@+id/box_metals"
                             android:paddingRight="32dip"
-                            android:text="Glass"/>
+                            android:text="Others"/>
                     </RelativeLayout>
 
                     <TextView
@@ -149,7 +144,7 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Approx. weight of waste(in Kgs.)"
                         android:id="@+id/textView4"
-                        android:textSize="22dp"
+                        android:textSize="20dp"
                         android:layout_marginBottom="10dp"
                         android:textColor="#000" />
                     <RadioGroup
@@ -161,7 +156,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/paper_radio"
-                            android:textSize="18sp"
                             android:paddingRight="35dip"
                             android:text="2 Kg"
                             />
@@ -170,13 +164,11 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/plastic_radio"
                             android:paddingRight="35dip"
-                            android:textSize="18sp"
                             android:text="5 Kg"
                             />
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="18sp"
                             android:id="@+id/Glass"
                             android:text="10 Kg"
                             />
@@ -185,7 +177,6 @@
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
                         android:id="@+id/custom_wt"
                         android:text="Others"
                         />

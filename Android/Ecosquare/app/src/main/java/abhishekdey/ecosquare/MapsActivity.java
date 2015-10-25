@@ -381,7 +381,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                                 .position(new LatLng(lat, lon))
                                                 .title(description).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                                                 .snippet("Kolkata"));
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
                                         myMarker.setDraggable(true);
                                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                             @Override
@@ -404,13 +404,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
             }
         });
-        View inf = getLayoutInflater().inflate(R.layout.image_layout
+        final View inf = getLayoutInflater().inflate(R.layout.image_layout
                 , null);
-        Dialog settingsDialog = new Dialog(this);
-        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        settingsDialog.setContentView(inf);
-        settingsDialog.show();
-        settingsDialog.getWindow().setLayout(400, 365);
         final ImageView imageView = (ImageView)inf.findViewById(R.id.imgview);
         Ion.with(getApplicationContext())
                 .load(getString(R.string.url)+"/promo")
@@ -424,6 +419,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                     .placeholder(R.drawable.leaf)
                                     .error(R.drawable.leaf)
                                     .load(getString(R.string.url)+"/fetchpromo");
+
+                            Dialog settingsDialog = new Dialog(getApplicationContext());
+                            settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                            settingsDialog.setContentView(inf);
+                            settingsDialog.show();
+                            settingsDialog.getWindow().setLayout(400, 365);
                         }
                     }
                 });
@@ -465,7 +466,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 onLocationChanged(SplashScreen.loc);
             }
             else if(location!=null){
-                Toast.makeText(getBaseContext(), "Location is: "+location.getLatitude(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Location found", Toast.LENGTH_SHORT).show();
                 onLocationChanged(location);
             }
             else
@@ -1031,7 +1032,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(lat, lon))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
 
@@ -1043,7 +1044,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         .position(new LatLng(lat,lon))
                         .title(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin))
                         .snippet(addresses.get(0).getLocality()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 14.0f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 15.0f));
                 myMarker.setDraggable(true);
                 mMap.setOnMarkerClickListener(this);
                 mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());

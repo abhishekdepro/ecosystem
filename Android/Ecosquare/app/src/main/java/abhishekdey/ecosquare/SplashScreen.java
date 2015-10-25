@@ -137,8 +137,6 @@ public class SplashScreen extends Activity {
             if(location!=null){
                 loc = location;
             }
-            else
-                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
         }else{
             Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();

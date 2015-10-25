@@ -49,29 +49,14 @@ public class Tutorial extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                TextView tv = (TextView)findViewById(R.id.viewPagerText);
-                ImageView img = (ImageView)findViewById(R.id.imgViewPager);
-                ImageView imgInside = (ImageView)findViewById(R.id.imgInside);
+
                 if(position==4){
 
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(intent);
                     finish();
                 }
-                else if(position==0){
-                    imgInside.setImageResource(R.drawable.waste);
-                    img.setVisibility(View.INVISIBLE);
-                    tv.setText("Just book your pickup using our app. Keep your waste ready.");
-                }
-                else if(position==2){
-                    img.setImageResource(R.drawable.rupee);
-                    imgInside.setVisibility(View.INVISIBLE);
-                    tv.setText("Get Cash and Credits. Cash for Trash.");
-                }else if(position==1){
-                    img.setImageResource(R.drawable.car);
-                    img.setVisibility(View.VISIBLE);
-                    tv.setText("We will pick up the waste from your place");
-                }
+
             }
 
             @Override
