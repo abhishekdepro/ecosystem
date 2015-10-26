@@ -2,10 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="info.androidhive.materialtabs.fragments.OneFragment">
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/example1"
         android:src="@drawable/ref"
@@ -14,8 +16,8 @@
         android:id="@+id/example1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your Referral code"
-        android:textSize="20dp"
+        android:text="Share your code with friends"
+        android:textSize="18dp"
         android:layout_marginBottom="30dp"
         android:layout_above="@+id/code"
         android:layout_centerInParent="true"/>
@@ -23,24 +25,36 @@
         android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_share"
         android:text="XXXXXX"
         android:textColor="@color/primary_green"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:textStyle="bold"
-        android:layout_marginBottom="40dp"
         android:layout_centerInParent="true"/>
-
-    <ImageButton
+    <TextView
+    android:id="@+id/example2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+    android:text="You will get 50 points for each friend who joins with your code."
+    android:textSize="18dp"
+    android:layout_marginTop="30dp"
+    android:layout_below="@+id/code"
+    android:layout_centerInParent="true"/>
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_share"
-        android:onClick="shareme"
-        android:layout_width="120dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_height="120dp"
-        android:layout_marginBottom="120dp"
-        android:src="@drawable/share_black"
-        android:background="#00000000"
-        />
+        android:layout_centerHorizontal="true"
+        android:onClick="shareme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@drawable/share"
+        app:backgroundTint="#2A2A2A"
+        android:layout_gravity="bottom|center_horizontal"
+        app:layout_anchorGravity="right|end"/>
+
+
 
 </RelativeLayout>

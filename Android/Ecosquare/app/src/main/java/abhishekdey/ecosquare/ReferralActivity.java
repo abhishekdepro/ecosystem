@@ -88,9 +88,9 @@ public class ReferralActivity extends AppCompatActivity {
     public void shareme(View v){
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = "Give your waste to Ecosquare and earn cash/credits. Sign up using my referral code : "+ ParseUser.getCurrentUser().get("Code").toString()
+        String shareBody = "Give your waste to Ecosquare and earn cash/credits. Sign up using my referral code : "+OneFragment._code
                 +" For details: http://ecosquare.in";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ecosquare Referral Code");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ecosquare: Get Cash for Trash");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
@@ -98,7 +98,7 @@ public class ReferralActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new OneFragment(), "CODE");
-        adapter.addFragment(new OneFragment(), "REFERRALS");
+        adapter.addFragment(new TwoFragment(), "REFERRALS");
         viewPager.setAdapter(adapter);
     }
 
