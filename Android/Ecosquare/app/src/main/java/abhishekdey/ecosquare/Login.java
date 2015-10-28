@@ -66,7 +66,8 @@ public class Login extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
         ParseUser currentUser = ParseUser.getCurrentUser();
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(SignUp.PREFS_NAME, Context.MODE_PRIVATE);
-        String isFirst = "yes";//prefs.getString("firstTime", "");
+        //String isFirst = "yes";
+        String isFirst = prefs.getString("firstTime", "");
         if (currentUser != null) {
             if(isFirst.equals("no")){
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);

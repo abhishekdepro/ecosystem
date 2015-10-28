@@ -1,0 +1,115 @@
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/imgdeals"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/deals_icon"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:id="@+id/txtdeals"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgdeals"
+        android:gravity="center"
+        android:layout_marginBottom="6dp"
+        android:text="Use your eco points and get a Deal"
+        android:textSize="18sp"
+        />
+
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_below="@+id/txtdeals"
+    android:layout_margin="8dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.joooonho.SelectableRoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="140dp"
+            android:id="@+id/image"
+            android:src="@drawable/tea_junction"
+            android:scaleType="fitXY"
+            app:sriv_left_top_corner_radius="4dp"
+            app:sriv_right_top_corner_radius="4dp"
+            app:sriv_left_bottom_corner_radius="0dp"
+            app:sriv_right_bottom_corner_radius="0dp"
+
+            app:sriv_oval="false" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:layout_below="@+id/image"
+            >
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Tea Junction"
+                    android:textSize="16sp"
+                    />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <!-- ... -->
+</android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view1"
+        android:layout_below="@+id/card_view"
+        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.joooonho.SelectableRoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="fill_parent"
+                android:layout_height="140dp"
+                android:id="@+id/image1"
+                android:src="@drawable/kfc"
+                android:scaleType="fitXY"
+                app:sriv_left_top_corner_radius="4dp"
+                app:sriv_right_top_corner_radius="4dp"
+                app:sriv_left_bottom_corner_radius="0dp"
+                app:sriv_right_bottom_corner_radius="0dp"
+
+                app:sriv_oval="false" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:layout_below="@+id/image1"
+                >
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="KFC"
+                    android:textSize="16sp"
+                    />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <!-- ... -->
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

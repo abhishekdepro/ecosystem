@@ -56,7 +56,7 @@ public class TwoFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout = null;
 
     private String[] feedList = null;
-    private String feedUrl = "http://api.ecosquare.in/transaction/"+ ParseUser.getCurrentUser().getUsername().toString();
+    private String feedUrl = "http://api.ecosquare.in/ref/"+ ParseUser.getCurrentUser().getUsername().toString();
 
 
 
@@ -200,7 +200,7 @@ public class TwoFragment extends Fragment {
             for (int i = 0; i < response.length(); i++) {
                 JSONObject post = response.optJSONObject(i);
 
-                feedList[i]=post.optString("_id");
+                feedList[i]=post.optString("to");
             }
 
 

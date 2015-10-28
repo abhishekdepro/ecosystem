@@ -407,12 +407,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         final View inf = getLayoutInflater().inflate(R.layout.image_layout
                 , null);
         final ImageView imageView = (ImageView)inf.findViewById(R.id.imgview);
+        try{
         Ion.with(getApplicationContext())
                 .load(getString(R.string.url)+"/promo")
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
+                        if(e==null){
                         String exists = result.get("exists").toString();
                         if (exists.equals("1")) {
                             Ion.with(imageView)
@@ -426,8 +428,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             settingsDialog.show();
                             settingsDialog.getWindow().setLayout(400, 365);
                         }
+                        }
                     }
                 });
+        }catch (Exception ex){
+            Toast.makeText(getBaseContext(), "Could not connect at the moment.", Toast.LENGTH_SHORT).show();
+        }
 
 
 
@@ -1230,6 +1236,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         editor.putString("lon", Double.toString(lon));
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), Estimate.class);
+        startActivity(intent);
+
+    }
+
+    public void gotoDeals(View v){
+
+        Intent intent = new Intent(getApplicationContext(), Deals.class);
         startActivity(intent);
 
     }
