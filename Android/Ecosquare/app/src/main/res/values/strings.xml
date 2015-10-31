@@ -13,7 +13,7 @@
     <!-- Nav Drawer Menu Items -->
     <string-array name="items">
         <item>PROFILE</item>
-        <item>PAYMENT</item>
+        <item>FAVOURITES</item>
         <item>HISTORY</item>
         <item>REFERRAL</item>
         <item>HELP</item>
@@ -24,7 +24,7 @@
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
         <item>@drawable/account</item>
-        <item>@drawable/payment</item>
+        <item>@drawable/fav</item>
         <item>@drawable/history</item>
         <item>@drawable/share</item>
         <item>@drawable/help</item>

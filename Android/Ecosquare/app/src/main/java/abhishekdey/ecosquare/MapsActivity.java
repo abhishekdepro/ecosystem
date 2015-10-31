@@ -47,6 +47,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,6 +171,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private ListView drawerListView;
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
+    static Button notifCount;
+    static int mNotifCount = 0;
 
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
@@ -767,7 +770,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                                             _new = mMap.addMarker(new MarkerOptions()
                                                     .position(new LatLng(Double.parseDouble(jsonObj.lat), Double.parseDouble(jsonObj.lon)))
-                                                    .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle))
+                                                    .title(jsonObj._id).icon(BitmapDescriptorFactory.fromResource(R.drawable.ecocar))
                                                     .snippet("50% full"));
 
                                             markers.add(_new);
@@ -1157,9 +1160,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-         x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("50% full"));
+         x = mMap.addMarker(new MarkerOptions().position(new LatLng(22.56, 88.36)).title("C9ERTY").icon(BitmapDescriptorFactory.fromResource(R.drawable.ecocar)).snippet("50% full"));
 
-        y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.recycle)).snippet("30% full"));
+        y = mMap.addMarker(new MarkerOptions().position(new LatLng(22.50, 88.36)).title("XYT6UI").icon(BitmapDescriptorFactory.fromResource(R.drawable.ecocar)).snippet("30% full"));
 
         x.showInfoWindow();
         y.showInfoWindow();
