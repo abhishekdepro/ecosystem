@@ -99,7 +99,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="10dp">
                         <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="0dp">
                         <RadioButton
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/Glass"
+                            android:id="@+id/Glass_radio"
                             android:text="10 Kg"
                             />
 
@@ -181,9 +181,63 @@
                         android:text="Others"
                         />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Payment option"
+                        android:id="@+id/textView5"
+                        android:textSize="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:textColor="#000" />
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                        <RadioButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ecopts"
+                            android:paddingRight="35dip"
+                            android:text="Eco Points"
+                            />
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/cash"
+                            android:paddingRight="35dip"
+                            android:text="Cash"
+                            />
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/donation"
+                            android:text="Donation"
+                            />
+
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="* Eco Points are credited in your account. You can redeem them and get exclusive deals from our partners"
+                        android:id="@+id/textView6"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/donation"
+                        android:textSize="11sp" />
+
                     <Button android:id="@+id/bookBtn" style="?android:textAppearanceSmall"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="160dp" android:text="Book A Pickup"
+                        android:layout_marginTop="30dp" android:text="Book A Pickup"
                         android:textSize="18dp"
                         android:textColor="#000"
                         android:onClick="clicked"

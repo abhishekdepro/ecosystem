@@ -52,7 +52,7 @@
     <string name="title_activity_transparent">TransparentActivity</string>
     <string name="title_activity_tutorial">Tutorial</string>
     <string name="title_activity_referral">ReferralActivity</string>
-
+    <string name="donation">* If you like to donate an old book or perhaps an used bicycle consider a donation. We have partners like UNICEF, CRY to help your donation reach the unprivileged.</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>

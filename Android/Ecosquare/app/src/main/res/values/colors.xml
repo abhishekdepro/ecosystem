@@ -2,6 +2,9 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="status_bar">#1d1d1d</color>
+    <color name="action_bar_normal">#2A2A2A</color>
     <color name="status_bar_white">#a7a7a7</color>
     <color name="primary_green">#92d050</color>
+    <color name="colorPrimary">#92d050</color>
+    <color name="colorAccent">#92d050</color>
 </resources>

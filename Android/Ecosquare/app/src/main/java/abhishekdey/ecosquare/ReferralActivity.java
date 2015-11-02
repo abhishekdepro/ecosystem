@@ -58,6 +58,7 @@ public class ReferralActivity extends AppCompatActivity {
         bar.setLogo(R.drawable.logo);
         bar.setDisplayUseLogoEnabled(true);
         bar.setTitle(" " + "Ecosquare");*/
+        getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.status_bar)));
