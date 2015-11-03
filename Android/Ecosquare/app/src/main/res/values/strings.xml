@@ -26,7 +26,7 @@
         <item>@drawable/account</item>
         <item>@drawable/fav</item>
         <item>@drawable/history</item>
-        <item>@drawable/share</item>
+        <item>@drawable/share_black</item>
         <item>@drawable/help</item>
         <item>@drawable/info</item>
     </array>

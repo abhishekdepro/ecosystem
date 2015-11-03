@@ -96,7 +96,7 @@
             android:layout_gravity="start"
             android:choiceMode="singleChoice"
             android:divider="#DD1d1d1d"
-            android:background="#DD1d1d1d"
+            android:background="#fff"
             android:paddingTop="20sp"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
