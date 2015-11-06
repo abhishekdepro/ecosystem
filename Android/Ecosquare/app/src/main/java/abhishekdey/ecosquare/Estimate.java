@@ -72,6 +72,7 @@ public class Estimate extends ActionBarActivity {
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
                             book();
+
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -124,7 +125,11 @@ public class Estimate extends ActionBarActivity {
                                             progress.dismiss();
                                         }
                                     });
-                                    Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
+
+                                    //Toast.makeText(getBaseContext(), "Pickup added successfully! We will contact you soon.", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(), CompleteBooking.class);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             }
                         });

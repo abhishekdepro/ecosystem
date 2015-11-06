@@ -15,8 +15,8 @@ android {
         applicationId "abhishekdey.ecosquare"
         minSdkVersion 19
         targetSdkVersion 21
-        versionCode 5
-        versionName "1.5"
+        versionCode 8
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -45,6 +45,7 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:0.7.+'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'com.github.clans:fab:1.6.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.joooonho:selectableroundedimageview:1.0.1'
     compile('com.mikepenz:materialdrawer:3.1.2@aar') {
         transitive = true

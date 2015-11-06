@@ -1,9 +1,9 @@
 package abhishekdey.ecosquare;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,8 +14,7 @@ import android.view.WindowManager;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-
-public class Deals extends AppCompatActivity {
+public class Empty extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -41,7 +40,15 @@ public class Deals extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_logo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2A2A2A")));
-        setContentView(R.layout.activity_deals);
+        setContentView(R.layout.activity_empty);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(intent);
+        finish();
 
 
     }

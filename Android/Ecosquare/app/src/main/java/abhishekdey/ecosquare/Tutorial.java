@@ -2,6 +2,7 @@ package abhishekdey.ecosquare;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,8 @@ public class Tutorial extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_tutorial);
-
+        final ImageView img = (ImageView) findViewById(R.id.imgViewPager);
+        final TextView tv = (TextView)findViewById(R.id.viewPagerText);
 
 
         // UNSELECTED BACKGROUND
@@ -50,7 +52,26 @@ public class Tutorial extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
+
+
+                if(position==1){
+                    img.setImageResource(R.drawable.tut2);
+                    tv.setText("Choose type of waste, weight and payment mode");
+                }
+
+                if(position==2){
+                    img.setImageResource(R.drawable.tut4);
+                    tv.setText("Share your achievements with friends on social.");
+                }
+
+                if(position==3){
+                    img.setImageResource(R.drawable.tut3);
+                    tv.setText("Share your referral code and earn eco points.");
+                }
+
                 if(position==4){
+                    img.setImageResource(R.drawable.tut5);
+                    tv.setText("Use your eco points to redeem exciting deals.");
 
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(intent);

@@ -53,12 +53,28 @@
     <string name="title_activity_tutorial">Tutorial</string>
     <string name="title_activity_referral">ReferralActivity</string>
     <string name="donation">* If you like to donate an old book or perhaps an used bicycle consider a donation. We have partners like UNICEF, CRY to help your donation reach the unprivileged.</string>
+    <string name="thanks">Thanks for recycling your waste. We have sent you a confirmation and our eco guys will pick the waste from your place.</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-
+    <string name="facebook_app_id">1483642385288502</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_deals">Deals</string>
+    <string name="title_activity_complete_booking">CompleteBooking</string>
+    <string name="title_activity_about">About</string>
+    <string name="about">An eco-friendly app that provides you cash for trash!\nEcosquare app is pretty simple and easy to use.
+\n\n
+1. Use our app to book a pickup for your waste.\n
+2. Our eco cars are placed across the city.\n
+3. Our eco guys will visit your place and pick up the waste.\n
+4. You will get rewards in cash/credit based on your preferences as per the weight of waste.\n
+5. Use your points to redeem excellent deals from our partners.\n
+6. Above all, help us recycle and keep your city clean.\n\n
+
+Our app helps you choose your place of pickup be it home, work or your favorite place.\nJust click on the map, choose your category of waste, approximate weight of waste and we will get notified.
+
+Also, refer your friends and family and get extra credits as a referral bonus.</string>
+    <string name="title_activity_empty">Empty</string>
 
 </resources>

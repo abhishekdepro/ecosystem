@@ -22,10 +22,11 @@
             android:id="@+id/viewPagerText"
             android:layout_above="@+id/imgViewPager"
             android:layout_margin="20dp"
+            android:layout_alignParentTop="true"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Just book your pickup using our app. Keep your waste ready."
+            android:text="You can find yourself on the map. Our eco cars are probably nearby."
             android:textColor="#FFF"
             android:textSize="20sp"
             />
@@ -34,8 +35,8 @@
             android:id="@+id/imgViewPager"
             android:layout_width="match_parent"
             android:layout_centerInParent="true"
-            android:layout_height="180dp"
-            android:src="@drawable/leaf"
+            android:layout_height="280dp"
+            android:src="@drawable/tut1"
 
             />
 

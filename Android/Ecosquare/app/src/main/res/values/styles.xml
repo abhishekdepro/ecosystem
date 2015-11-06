@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
+        <item name="actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="actionBarTabStyle">@style/ActionBarTabStyle</item>
         <!--item name="colorControlActivated">#92d050</item>

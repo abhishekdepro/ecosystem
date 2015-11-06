@@ -287,6 +287,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         fragment = new HomeFragment();
 
                         break;
+                    case 1:
+
+                        container.removeAllViewsInLayout();
+                        Intent _refIntent = new Intent(getApplicationContext(), Empty.class);
+                        startActivity(_refIntent);
+                        finish();
+                        break;
                     case 2:
 
                         container.removeAllViewsInLayout();
@@ -299,6 +306,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         container.removeAllViewsInLayout();
                         Intent refIntent = new Intent(getApplicationContext(), ReferralActivity.class);
                         startActivity(refIntent);
+                        finish();
+                        break;
+                    case 4:
+
+                        container.removeAllViewsInLayout();
+                        Intent _blank = new Intent(getApplicationContext(), Tutorial.class);
+                        startActivity(_blank);
+                        finish();
+                        break;
+                    case 5:
+
+                        container.removeAllViewsInLayout();
+                        Intent about = new Intent(getApplicationContext(), About.class);
+                        startActivity(about);
                         finish();
                         break;
 
@@ -900,133 +921,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     public void findAddress(){
         Geocoder geocoder;
-        List<Address> addresses=new List<Address>() {
-            @Override
-            public void add(int location, Address object) {
-
-            }
-
-            @Override
-            public boolean add(Address object) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(int location, Collection<? extends Address> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends Address> collection) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-
-            @Override
-            public boolean contains(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public Address get(int location) {
-                return null;
-            }
-
-            @Override
-            public int indexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            public Iterator<Address> iterator() {
-                return null;
-            }
-
-            @Override
-            public int lastIndexOf(Object object) {
-                return 0;
-            }
-
-            @Override
-            public ListIterator<Address> listIterator() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public ListIterator<Address> listIterator(int location) {
-                return null;
-            }
-
-            @Override
-            public Address remove(int location) {
-                return null;
-            }
-
-            @Override
-            public boolean remove(Object object) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> collection) {
-                return false;
-            }
-
-            @Override
-            public Address set(int location, Address object) {
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @NonNull
-            @Override
-            public List<Address> subList(int start, int end) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @NonNull
-            @Override
-            public <T> T[] toArray(T[] array) {
-                return null;
-            }
-        };
+        String city;
+        List<Address> addresses=new ArrayList<>();
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             if (addresses != null && !addresses.isEmpty()) {
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                String city = addresses.get(0).getLocality();
+                city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
                 String country = addresses.get(0).getCountryName();
                 String postalCode = addresses.get(0).getPostalCode();
