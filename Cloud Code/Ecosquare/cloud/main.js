@@ -38,11 +38,11 @@ Parse.Cloud.afterSave(Parse.User, function(request) {
     },
     success: function (httpResponse) {
 
-        console.log(httpResponse.text);
+        //console.log(httpResponse.text);
         response.success(httpResponse);
     },
     error:function (httpResponse) {
-        console.error('Request failed with response code ' + httpResponse.status);
+        //console.error('Request failed with response code ' + httpResponse.status);
 
         response.error(httpResponse.status);
     }
