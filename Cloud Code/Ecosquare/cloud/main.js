@@ -13,20 +13,21 @@ function hasWhiteSpace(s) {
 
 
 Parse.Cloud.afterSave(Parse.User, function(request) {
-
+  var _name;
+  var _code;
   var _id = request.object.get('username');
   if(hasWhiteSpace(request.object.get('Name'))){
-    var _name = request.object.get('Name').split(' ').join('%20');
+    _name = request.object.get('Name').split(' ').join('%20');
   }else{
-    var _name = request.object.get('Name');
+    _name = request.object.get('Name');
   }
   var _lat = request.object.get('Latitude');
   var _lon = request.object.get('Longitude');
   var _email = request.object.get('email');
   if(request.object.get('Code')!=""){
-    var _code = request.object.get('Code');
+    _code = request.object.get('Code');
   }else{
-    var _code = undefined;
+    _code = undefined;
   }
   Parse.Cloud.httpRequest({
 
