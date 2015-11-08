@@ -1,6 +1,6 @@
 
 
-Waste Management API
+Waste Management API :seedling:
 
 
 [![Build Status](https://travis-ci.org/abhishekdepro/ecosystem.svg)](https://travis-ci.org/abhishekdepro/ecosystem)
