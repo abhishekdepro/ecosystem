@@ -14,3 +14,8 @@ Waste Management API :seedling:
 [![Stories in Ready](https://badge.waffle.io/abhishekdepro/ecosystem.png?label=ready&title=Ready)](https://waffle.io/abhishekdepro/ecosystem)
 
 [![Throughput Graph](https://graphs.waffle.io/abhishekdepro/ecosystem/throughput.svg)](https://waffle.io/abhishekdepro/ecosystem/metrics)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/abhishekdepro/ecosystem/badge.svg?style=beer-square)](https://beerpay.io/abhishekdepro/ecosystem)  [![Beerpay](https://beerpay.io/abhishekdepro/ecosystem/make-wish.svg?style=flat-square)](https://beerpay.io/abhishekdepro/ecosystem?focus=wish)
